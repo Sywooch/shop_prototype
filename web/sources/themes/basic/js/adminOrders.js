@@ -19,30 +19,32 @@ $(function() {
      * Запрашивает календарь
     */
     $('div.orders-filters').on('click', '[class^="calendar-href"]', function(event) {
-        adminCalendar.send(event, 'p.calendar-place');
+        adminCalendar.send(event, '.calendar-place');
         event.preventDefault();
     });
+    
+    var li = $('.admin-orders').find('li');
     
     /*
      * Отправляет запрос формы редактирования заказа
      */
-    $('li').on('click', 'form[id^="admin-order-detail-get-form"] > input:submit', function(event) {
-        send.htmlLiToggleSend(event, 'div.admin-order-previous-data');
+    li.on('click', 'form[id^="admin-order-detail-get-form"] > input[type="submit"]', function(event) {
+        send.htmlLiToggleSend(event, '.admin-order-previous-data');
         event.preventDefault();
     });
     
     /*
      * Удаляет форму редактирования
      */
-    $('li').on('click', 'form[id^="admin-order-detail-send-form"] > input:submit[name="cancel"]', function(event) {
-        send.removeForm(event, 'div.admin-order-previous-data', 'div.admin-order-change-form');
+    li.on('click', 'input[type="submit"][name="cancel"]', function(event) {
+        send.removeForm(event, '.admin-order-previous-data', '.admin-order-change-form');
         event.preventDefault();
     });
     
     /*
      * Отправляет форму
      */
-    $('li').on('click', 'form[id^="admin-order-detail-send-form-"] > input:submit[name="send"]', function(event) {
+    li.on('click', 'input[type="submit"][name="send"]', function(event) {
         send.htmlLiSend(event);
         event.preventDefault();
     });
@@ -50,8 +52,8 @@ $(function() {
     /*
      * Запрашивает ссылку на CSV представление данных
      */
-    $('#admin-scv-orders-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'p.csv-success');
+    $('#admin-scv-orders-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.csv-success');
         event.preventDefault();
     });
     

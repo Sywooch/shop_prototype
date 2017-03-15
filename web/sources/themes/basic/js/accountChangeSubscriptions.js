@@ -12,8 +12,8 @@ $(function() {
     /*
      * Отправляет форму, обновляющую данные о подписках
      */
-    $('div.account-unsubscribe, div.account-subscribe').on('click', 'input:submit', function(event) {
-        send.htmlArraySend(event, 'div.account-unsubscribe', 'div.account-subscribe', 'unsubscribe', 'subscribe');
+    $('.account-unsubscribe, .account-subscribe').on('click', 'input[type="submit"]', function(event) {
+        send.htmlArraySend(event, '.account-unsubscribe', '.account-subscribe', 'unsubscribe', 'subscribe');
         event.preventDefault();
     });
     

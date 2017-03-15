@@ -10,39 +10,41 @@ $(function() {
     /*
      * Отправляет запрос на создание новой подписки
      */
-     $('#mailing-create-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-mailings', true);
+     $('#mailing-create-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-mailings', true);
         event.preventDefault();
     });
+    
+    var adminMailings = $('.admin-mailings');
     
     /*
      * Отправляет запрос на удаление рассылки
      */
-    $('div.admin-mailings').on('click', 'form[id^="admin-mailing-delete-form"] > input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-mailings', false, true);
+    adminMailings.on('click', 'form[id^="admin-mailing-delete-form"] > input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-mailings', false, true);
         event.preventDefault();
     });
     
     /*
      * Запрашивает форму редактирования
      */
-    $('div.admin-mailings').on('click', 'form[id^="admin-mailing-get-form"] > input:submit', function(event) {
-        send.htmlLiToggleSend(event, 'div.admin-mailing-previous-data');
+    adminMailings.on('click', 'form[id^="admin-mailing-get-form"] > input[type="submit"]', function(event) {
+        send.htmlLiToggleSend(event, '.admin-mailing-previous-data');
         event.preventDefault();
     });
     
     /*
      * Отменяет форму редактирования
      */
-    $('div.admin-mailings').on('click', ':submit[name="cancel"]', function(event) {
-        send.removeForm(event, 'div.admin-mailing-previous-data', 'div.admin-mailing-edit-form');
+    adminMailings.on('click', 'input[type="submit"][name="cancel"]', function(event) {
+        send.removeForm(event, '.admin-mailing-previous-data', '.admin-mailing-edit-form');
         event.preventDefault();
     });
     
     /*
      * Отправляет форму с отредактированными данными
      */
-    $('div.admin-mailings').on('click', ':submit[name="send"]', function(event) {
+    adminMailings.on('click', 'input[type="submit"][name="send"]', function(event) {
         send.htmlLiSend(event);
         event.preventDefault();
     });

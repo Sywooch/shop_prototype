@@ -11,7 +11,7 @@ $(function() {
     /* Отправляет форму с данными для очистки корзины, 
     * обновляет информацию и состоянии
     */
-    $('div.shortCart').on('click', '#clean-cart-form > input:submit', function(event) {
+    $('.shortCart').on('click', '#clean-cart-form > input[type="submit"]', function(event) {
         send.htmlSend(event, 'div.shortCart');
         event.preventDefault();
     });
@@ -19,8 +19,8 @@ $(function() {
     /* Отправляет форму с данными для отмены рассылок, 
     * обновляет информацию и состоянии
     */
-    $('#unsubscribe-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.unsubscribe');
+    $('#unsubscribe-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.unsubscribe');
         event.preventDefault();
     });
 });

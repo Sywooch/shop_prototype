@@ -10,8 +10,8 @@ $(function() {
     /*
      * Запрашивает данные в формате CSV
      */
-    $('#admin-scv-users-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'p.csv-success');
+    $('#admin-scv-users-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.csv-success');
         event.preventDefault();
     });
 });

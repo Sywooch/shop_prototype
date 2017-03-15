@@ -12,8 +12,8 @@ $(function() {
     /*
      * Отправляет форму, обновляющую данные пользователя
      */
-    $('form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.account-change-data-success', false, false, true);
+    $('#change-data-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.account-change-data-success', false, false, true);
         event.preventDefault();
     });
     

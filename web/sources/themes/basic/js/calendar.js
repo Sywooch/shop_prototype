@@ -7,7 +7,21 @@ function Calendar() {
     this.send = function(event, container) {
         try {
             this.target = $(event.target);
-            if (this.target.attr('class') == 'calendar-href-from' || this.target.attr('class') == 'calendar-href-to') {
+            
+            if ($.data(this.target, 'current' != true)) {
+                console.log($.data(this.target, 'current'));
+                $.data(this.target, 'current', true);
+            } else {
+                $.data(this.target, 'current', false);
+                $(container).empty();
+                $(container).off('click');
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            
+            var currentClass = this.target.attr('class');
+            if (currentClass == 'calendar-href-from' || currentClass == 'calendar-href-to') {
                 this.targetDate = this.target;
             }
             
@@ -54,6 +68,14 @@ function Calendar() {
                     event.data.targetDate.attr('data-timestamp', eventTarget.attr('data-timestamp'));
                     event.preventDefault();
                 });
+                
+                /*this.target.off('click');
+                this.target.on('click', function(event) {
+                    $(container).empty();
+                    $(container).off('click');
+                    event.preventDefault();
+                    event.stopPropagation();
+                });*/
             };
         } catch (e) {
             console.log(e.name + ': ' + e.message);

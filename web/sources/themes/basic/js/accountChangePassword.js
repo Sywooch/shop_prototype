@@ -12,8 +12,8 @@ $(function() {
     /*
      * Отправляет форму, обновляющую данные пользователя
      */
-    $('form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.account-change-password-success', true, false, true);
+    $('#change-password-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.account-change-password-success', true, false, true);
         event.preventDefault();
     });
     

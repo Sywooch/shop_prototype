@@ -24,7 +24,7 @@ function GetSubcategory() {
                 if (typeof data == 'string') {
                     $(container).html(data);
                     if (filler == true) {
-                        $(container).find('option:first').text('------------------------');
+                        $(container).find('option').first().text('------------------------');
                     }
                     if (disable == true) {
                         this.firstOptionDisable();

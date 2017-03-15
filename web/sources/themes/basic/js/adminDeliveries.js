@@ -10,39 +10,41 @@ $(function() {
     /*
      * Запрос на создание новой формы доставки
      */
-    $('#delivery-create-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-deliveries', true);
+    $('#delivery-create-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-deliveries', true);
         event.preventDefault();
     });
+    
+    var adminDeliveries = $('.admin-deliveries');
     
     /*
      * Запрос удаления формы доставки
      */
-    $('div.admin-deliveries').on('click', 'form[id^="admin-delivery-delete-form"] > input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-deliveries', false, true);
+    adminDeliveries.on('click', 'form[id^="admin-delivery-delete-form"] > input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-deliveries', false, true);
         event.preventDefault();
     });
     
     /*
      * Запрос формы редактирования
      */
-    $('div.admin-deliveries').on('click', 'form[id^="admin-delivery-get-form"]', function(event) {
-        send.htmlLiToggleSend(event, 'div.admin-delivery-previous-data');
+    adminDeliveries.on('click', 'form[id^="admin-delivery-get-form"] > input[type="submit"]', function(event) {
+        send.htmlLiToggleSend(event, '.admin-delivery-previous-data');
         event.preventDefault();
     });
     
     /*
      * Закрыть форму редактирования
      */
-    $('div.admin-deliveries').on('click', ':submit[name="cancel"]', function(event) {
-        send.removeForm(event, 'div.admin-delivery-previous-data', 'div.admin-delivery-edit-form');
+    adminDeliveries.on('click', 'input[type="submit"][name="cancel"]', function(event) {
+        send.removeForm(event, '.admin-delivery-previous-data', '.admin-delivery-edit-form');
         event.preventDefault();
     });
     
     /*
      * Запрос изменения формы доставки
      */
-    $('div.admin-deliveries').on('click', ':submit[name="send"]', function(event) {
+    adminDeliveries.on('click', 'input[type="submit"][name="send"]', function(event) {
         send.htmlLiSend(event);
         event.preventDefault();
     });

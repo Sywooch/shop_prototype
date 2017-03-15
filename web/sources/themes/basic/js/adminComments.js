@@ -7,22 +7,24 @@ $(function() {
     Send.prototype = Object.create(AbstractSendForm.prototype);
     var send = new Send();
     
+    var li = $('.admin-comments').find('li');
+    
     /*
      * Запрашивает форму для редактирования комментария
      */
-    $('li').on('click', 'form[id^="admin-comment-detail-get-form"] > input:submit', function(event) {
-        send.htmlLiToggleSend(event, 'div.admin-comment-previous-data');
+    li.on('click', 'form[id^="admin-comment-detail-get-form"] > input[type="submit"]', function(event) {
+        send.htmlLiToggleSend(event, '.admin-comment-previous-data');
         event.preventDefault();
     });
     
     /*
      * Отправляет запрос на удаление комментария
      */
-    $('li').on('click', 'form[id^="admin-comment-detail-delete-form"] > input:submit', function(event) {
-        var name = $(event.target).closest('div.admin-comment-previous-data').find('a').text();
+    li.on('click', 'form[id^="admin-comment-detail-delete-form"] > input[type="submit"]', function(event) {
+        var name = $(event.target).closest('.admin-comment-previous-data').find('a').text();
         var result = confirm('Delete comment on the ' + name + '?');
         if (result == true) {
-            send.htmlLiToggleSend(event, 'div.admin-comment-previous-data');
+            send.htmlLiToggleSend(event, '.admin-comment-previous-data');
         }
         event.preventDefault();
     });
@@ -30,7 +32,7 @@ $(function() {
     /*
      * Отправляет форму с правками
      */
-    $('li').on('click', ':submit[name="send"]', function(event) {
+    li.on('click', 'input[type="submit"][name="send"]', function(event) {
         send.htmlLiSend(event);
         event.preventDefault();
     });
@@ -38,16 +40,16 @@ $(function() {
     /*
      * Отменяет отправку формы
      */
-    $('li').on('click', ':submit[name="cancel"]', function(event) {
-        send.removeForm(event, 'div.admin-comment-previous-data', 'div.admin-comment-edit-form');
+    li.on('click', 'input[type="submit"][name="cancel"]', function(event) {
+        send.removeForm(event, '.admin-comment-previous-data', '.admin-comment-edit-form');
         event.preventDefault();
     });
     
     /*
      * Запрашивает данные в формате CSV
      */
-    $('#admin-scv-comments-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'p.csv-success');
+    $('#admin-scv-comments-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.csv-success');
         event.preventDefault();
     });
 });

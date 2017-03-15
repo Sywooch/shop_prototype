@@ -37,8 +37,8 @@ $(function() {
     /*
      * Отправляет форму с данными товара
      */
-    $('div.admin-add-product-form').on('click', 'input:submit', function(event) {
-        sendFile.htmlArraySend(event, 'div.add-product-success', 'div.admin-add-product-form', 'successText', 'form', false, true, false, true);
+    $('.admin-add-product-form').on('click', 'input[type="submit"]', function(event) {
+        sendFile.htmlArraySend(event, '.add-product-success', '.admin-add-product-form', 'successText', 'form', false, true, false, true);
         event.preventDefault();
     });
 });

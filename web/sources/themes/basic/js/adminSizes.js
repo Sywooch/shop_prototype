@@ -11,16 +11,16 @@ $(function() {
     /* 
      * Отправляет запрос на добавление размера
     */
-    $('#size-create-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-sizes', true);
+    $('#size-create-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-sizes', true);
         event.preventDefault();
     });
     
     /* 
      * Отправляет запрос на удаление размера
     */
-    $('div.admin-sizes').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-sizes', false, true);
+    $('.admin-sizes').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-sizes', false, true);
         event.preventDefault();
     });
     

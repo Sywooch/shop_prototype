@@ -6,7 +6,7 @@ function Helpers()
      */
     this.cleanHelpBlock = function(form) {
         try {
-            form.find('div.help-block').html('');
+            form.find('.help-block').html('');
         } catch (e) {
             console.log(e.name + ': ' + e.message);
         }
@@ -19,7 +19,7 @@ function Helpers()
     this.addErrors = function(data) {
         try {
             for (var key in data) {
-                $('#' + key).closest('div.form-group').find('div.help-block').text(data[key]);
+                $('#' + key).closest('.form-group').find('.help-block').text(data[key]);
             }
         } catch (e) {
             console.log(e.name + ': ' + e.message);
@@ -33,7 +33,7 @@ function Helpers()
     this.addClosestErrors = function(data) {
         try {
             for (var key in data) {
-                this.form.find('div.help-block').text(data[key]);
+                this.form.find('.help-block').text(data[key]);
             }
         } catch (e) {
             console.log(e.name + ': ' + e.message);
@@ -58,8 +58,8 @@ function Helpers()
      */
     this.cleanFields = function(form) {
         try {
-            form.find('input:text, input:password, input[type="number"], textarea').val('');
-            form.find('input:checkbox').prop('checked', false);
+            form.find('input[type="text"], input[type="password"], input[type="number"], textarea').val('');
+            form.find('input[type="checkbox"]').prop('checked', false);
             form.find('select').prop('selectedIndex', 0);
         } catch (e) {
             console.log(e.name + ': ' + e.message);
@@ -87,7 +87,7 @@ function Helpers()
     this.firstOptionDisable = function() {
         try {
             $('select[data-disabled]').each(function(index, domElement) {
-                $(domElement).find('option:first').attr('disabled', true);
+                $(domElement).find('option').first().attr('disabled', true);
             });
         } catch (e) {
             console.log(e.name + ': ' + e.message);

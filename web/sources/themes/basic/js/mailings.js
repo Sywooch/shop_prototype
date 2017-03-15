@@ -11,16 +11,16 @@ $(function() {
     /* Отправляет форму с данными для очистки корзины, 
     * обновляет информацию и состоянии
     */
-    $('div.shortCart').on('click', '#clean-cart-form > input:submit', function(event) {
-        send.htmlSend(event, 'div.shortCart');
+    $('.shortCart').on('click', '#clean-cart-form > input[type="submit"]', function(event) {
+        send.htmlSend(event, '.shortCart');
         event.preventDefault();
     });
     
     /* Отправляет форму с данными о выбранных подписках, 
     * обновляет информацию и состоянии
     */
-    $('#mailings-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.mailings-success', false, false, true);
+    $('#mailings-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.mailings-success', false, false, true);
         event.preventDefault();
     });
 });

@@ -18,16 +18,16 @@ $(function() {
     /* 
      * Запрашивает календарь
     */
-    $('div.orders-filters').on('click', '[class^="calendar-href"]', function(event) {
-        accountCalendar.send(event, 'p.calendar-place');
+    $('.orders-filters').on('click', '[class^="calendar-href"]', function(event) {
+        accountCalendar.send(event, '.calendar-place');
         event.preventDefault();
     });
     
     /*
      * Отправляет форму отменяющую заказ
      */
-    $('li').on('click', 'form[id^="order-cancellation-form"] > input:submit', function(event) {
-        send.htmlLiRemoveSend(event, 'span.account-order-status');
+    $('.account-orders').find('li').on('click', 'input[type="submit"]', function(event) {
+        send.htmlLiRemoveSend(event, '.account-order-status');
         event.preventDefault();
     });
     

@@ -24,27 +24,29 @@ $(function() {
     /*
      * Получает подкатегории для выбранной категории
      */
-    $('body').on('change', '#adminproductsfiltersform-category', function(event) {
+    $('#admin-products-filters-form').on('change', '#adminproductsfiltersform-category', function(event) {
         subcategorySend.send(event, '#adminproductsfiltersform-subcategory');
         event.preventDefault();
     });
     
+    var li = $('.admin-products').find('li');
+    
     /*
      * Запрашивает форму редактирования товара
      */
-    $('li').on('click', 'form[id^="admin-product-detail-get-form"] > input:submit', function(event) {
-        send.htmlLiToggleSend(event, 'div.admin-product-previous-data');
+    li.on('click', 'form[id^="admin-product-detail-get-form"] > input[type="submit"]', function(event) {
+        send.htmlLiToggleSend(event, '.admin-product-previous-data');
         event.preventDefault();
     });
     
     /*
      * Удаляет товар
      */
-    $('li').on('click', 'form[id^="admin-product-detail-delete-form"] > input:submit', function(event) {
-        var name = $(event.target).closest('div.admin-product-previous-data').find('a').text();
+    li.on('click', 'form[id^="admin-product-detail-delete-form"] > input[type="submit"]', function(event) {
+        var name = $(event.target).closest('.admin-product-previous-data').find('a').text();
         var result = confirm('Delete ' + name + '?');
         if (result == true) {
-            send.htmlLiToggleSend(event, 'div.admin-product-previous-data');
+            send.htmlLiToggleSend(event, '.admin-product-previous-data');
         }
         event.preventDefault();
     });
@@ -52,15 +54,15 @@ $(function() {
     /*
      * Отменят редактирование товара
      */
-    $('li').on('click', ':submit[name="cancel"]', function(event) {
-        send.removeForm(event, 'div.admin-product-previous-data', 'div.admin-product-change-form');
+    li.on('click', 'input[type="submit"][name="cancel"]', function(event) {
+        send.removeForm(event, '.admin-product-previous-data', '.admin-product-change-form');
         event.preventDefault();
     });
     
     /*
      * Отправляет форму с обновленными данными
      */
-    $('li').on('click', ':submit[name="send"]', function(event) {
+    li.on('click', 'input[type="submit"][name="send"]', function(event) {
         sendFile.htmlLiSend(event);
         event.preventDefault();
     });
@@ -68,8 +70,8 @@ $(function() {
     /*
      * Запрашивает данные в формате CSV
      */
-    $('#admin-scv-products-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'p.csv-success');
+    $('#admin-scv-products-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.csv-success');
         event.preventDefault();
     });
     

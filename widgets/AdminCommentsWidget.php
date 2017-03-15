@@ -50,6 +50,7 @@ class AdminCommentsWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = $this->header;
+            $renderArray['listClass'] = 'admin-comments';
             
             if (!empty($this->comments)) {
                 foreach ($this->comments as $comment) {

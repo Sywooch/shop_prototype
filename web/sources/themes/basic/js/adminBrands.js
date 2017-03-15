@@ -11,16 +11,16 @@ $(function() {
     /* 
      * Отправляет запрос на добавление бренда
     */
-    $('#brand-create-form').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-brands', true);
+    $('#brand-create-form').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-brands', true);
         event.preventDefault();
     });
     
     /* 
      * Отправляет запрос на удаление бренда
     */
-    $('div.admin-brands').on('click', 'input:submit', function(event) {
-        send.htmlSend(event, 'div.admin-brands', false, true);
+    $('.admin-brands').on('click', 'input[type="submit"]', function(event) {
+        send.htmlSend(event, '.admin-brands', false, true);
         event.preventDefault();
     });
     
