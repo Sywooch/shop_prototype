@@ -53,9 +53,7 @@ $(function() {
      * Отменят редактирование товара
      */
     $('li').on('click', ':submit[name="cancel"]', function(event) {
-        var li = $(event.target).closest('li');
-        li.find('div.admin-product-previous-data').toggleClass('disable');
-        li.find('div.admin-product-change-form').remove();
+        send.removeForm(event, 'div.admin-product-previous-data', 'div.admin-product-change-form');
         event.preventDefault();
     });
     

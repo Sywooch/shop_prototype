@@ -32,12 +32,10 @@ $(function() {
     });
     
     /*
-     * Удаляет форму редактирования, возвращает информацию о заказе
+     * Удаляет форму редактирования
      */
     $('li').on('click', 'form[id^="admin-order-detail-send-form"] > input:submit[name="cancel"]', function(event) {
-        var li = $(event.target).closest('li');
-        li.find('div.admin-order-previous-data').toggleClass('disable');
-        li.find('div.admin-order-change-form').remove();
+        send.removeForm(event, 'div.admin-order-previous-data', 'div.admin-order-change-form');
         event.preventDefault();
     });
     

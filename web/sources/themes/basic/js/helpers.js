@@ -93,4 +93,17 @@ function Helpers()
             console.log(e.name + ': ' + e.message);
         }
     };
+    
+    /*
+     * Закрывает форму редактирования
+     */
+    this.removeForm = function(event, container1, container2) {
+        try {
+            var li = $(event.target).closest('li');
+            li.find(container1).toggleClass('disable');
+            li.find(container2).remove();
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
 }

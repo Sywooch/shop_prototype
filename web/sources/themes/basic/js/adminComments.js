@@ -39,9 +39,7 @@ $(function() {
      * Отменяет отправку формы
      */
     $('li').on('click', ':submit[name="cancel"]', function(event) {
-        var li = $(event.target).closest('li');
-        li.find('div.admin-comment-previous-data').toggleClass('disable');
-        li.find('div.admin-comment-edit-form').remove();
+        send.removeForm(event, 'div.admin-comment-previous-data', 'div.admin-comment-edit-form');
         event.preventDefault();
     });
     
