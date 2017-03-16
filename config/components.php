@@ -25,7 +25,7 @@ $components = [
     ],
     
     'request'=>[
-        'cookieValidationKey'=>sha1('cabe9c094077342a0679eba5d6d25811'),
+        'cookieValidationKey'=>'zp5&E|QVj`=h=?m$yZ1g\'|oWU$Ug3ERc',
     ],
     
     'log'=>[

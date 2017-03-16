@@ -1,4 +1,6 @@
 function Calendar() {
+    this.rawTarget;
+    this.rawTargetPrev = null;
     this.target;
     this.targetDate;
     this.url;
@@ -7,22 +9,24 @@ function Calendar() {
     this.send = function(event, container) {
         try {
             this.target = $(event.target);
-            
-            if ($.data(this.target, 'current' != true)) {
-                console.log($.data(this.target, 'current'));
-                $.data(this.target, 'current', true);
-            } else {
-                $.data(this.target, 'current', false);
-                $(container).empty();
-                $(container).off('click');
-                event.preventDefault();
-                event.stopPropagation();
-                return;
-            }
-            
             var currentClass = this.target.attr('class');
+            
             if (currentClass == 'calendar-href-from' || currentClass == 'calendar-href-to') {
                 this.targetDate = this.target;
+                this.rawTarget = event.target;
+                if ($.data(this.rawTarget, 'current') == 1) {
+                    $.data(this.rawTarget, 'current', '');
+                    $(container).empty();
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                } else {
+                    $.data(this.rawTarget, 'current', 1);
+                    if (this.rawTargetPrev != null && this.rawTargetPrev != this.rawTarget) {
+                        $.data(this.rawTargetPrev, 'current', '');
+                    }
+                    this.rawTargetPrev = this.rawTarget;
+                }
             }
             
             this.url = this.target.attr('href');
@@ -46,9 +50,9 @@ function Calendar() {
                 }
                 
                 $(container).on('click', 'td', this, function(event) {
+                    $.data(event.data.rawTarget, 'current', '');
                     var eventTarget = $(event.target);
                     $(container).empty();
-                    $(container).off('click');
                     
                     if (event.data.targetDate.attr('class') == 'calendar-href-to') {
                         if ($('.calendar-href-from').attr('data-timestamp') > eventTarget.attr('data-timestamp')) {
@@ -68,14 +72,6 @@ function Calendar() {
                     event.data.targetDate.attr('data-timestamp', eventTarget.attr('data-timestamp'));
                     event.preventDefault();
                 });
-                
-                /*this.target.off('click');
-                this.target.on('click', function(event) {
-                    $(container).empty();
-                    $(container).off('click');
-                    event.preventDefault();
-                    event.stopPropagation();
-                });*/
             };
         } catch (e) {
             console.log(e.name + ': ' + e.message);
