@@ -64,20 +64,19 @@ trait ConfigHandlerTrait
     /**
      * Возвращает массив конфигурации для виджета CurrencyWidget
      * @param array $currencyArray массив доступных валют
-     * @param AbstractBaseForm $changeCurrencyForm
      * @return array
      */
-    private function currencyWidgetConfig(array $currencyArray, AbstractBaseForm $changeCurrencyForm): array
+    private function currencyWidgetConfig(array $currencyArray): array
     {
         try {
             $dataArray = [];
             
             ArrayHelper::multisort($currencyArray, 'code');
-            $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
+            $dataArray['currency'] = $currencyArray;
             
-            $dataArray['form'] = $changeCurrencyForm;
-            $dataArray['header'] = \Yii::t('base', 'Currency');
-            $dataArray['template'] = 'currency-form.twig';
+            //$dataArray['form'] = $changeCurrencyForm;
+            //$dataArray['header'] = \Yii::t('base', 'Currency');
+            $dataArray['template'] = 'currency-form-mod.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

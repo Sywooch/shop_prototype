@@ -82,5 +82,5 @@
 
 .subcategory-menu li.active a{
     color:#333;
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid #333;
 }

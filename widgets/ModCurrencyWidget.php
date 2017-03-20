@@ -3,10 +3,9 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
-    Widget};
+    Model};
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\forms\ChangeCurrencyForm;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -18,13 +17,9 @@ class ModCurrencyWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var object ChangeCurrencyForm
+     * @var Model
      */
-    private $form;
-    /**
-     * @var string заголовок
-     */
-    private $header;
+    private $current;
     /**
      * @var string имя HTML шаблона
      */
@@ -36,11 +31,8 @@ class ModCurrencyWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->form)) {
-                throw new ErrorException($this->emptyError('form'));
-            }
-            if (empty($this->header)) {
-                throw new ErrorException($this->emptyError('header'));
+            if (empty($this->current)) {
+                throw new ErrorException($this->emptyError('current'));
             }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
@@ -48,20 +40,13 @@ class ModCurrencyWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = $this->header;
-            $renderArray['currency'] = $this->currency;
+            $renderArray['currency'] = array_filter($this->currency, function($elm) {
+                return ($elm->main === 0);
+            });
             
-            $renderArray['formModel'] = $this->form;
-            $renderArray['formId'] = 'set-currency-form';
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
-            $renderArray['formAction'] = Url::to(['/currency/set']);
-            $renderArray['button'] = \Yii::t('base', 'Change');
+            $renderArray['current'] = $this->current->code;
+            $renderArray['action'] = Url::to(['/currency/set']);
+            $renderArray['link'] = Url::current();
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -70,7 +55,7 @@ class ModCurrencyWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array ModCurrencyWidget::currency
+     * Присваивает значение ModCurrencyWidget::currency
      * @param array $currency
      */
     public function setCurrency(array $currency)
@@ -83,33 +68,20 @@ class ModCurrencyWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает ChangeCurrencyForm свойству ModCurrencyWidget::form
-     * @param ChangeCurrencyForm $form
+     * Присваивает значение ModCurrencyWidget::current
+     * @param Model $current
      */
-    public function setForm(ChangeCurrencyForm $form)
+    public function setCurrent(Model $current)
     {
         try {
-            $this->form = $form;
+            $this->current = $current;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает заголовок свойству ChangeCurrencyForm::header
-     * @param string $header
-     */
-    public function setHeader(string $header)
-    {
-        try {
-            $this->header = $header;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает имя шаблона свойству ChangeCurrencyForm::template
+     * Присваивает значение ChangeCurrencyForm::template
      * @param string $template
      */
     public function setTemplate(string $template)

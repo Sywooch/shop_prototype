@@ -1,0 +1,53 @@
+/* Список валют */
+
+.currency-list,
+.currency-not-active{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.currency-button > span{
+    color:#333;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.currency-not-active{
+    position:absolute;
+    padding-top:1.0em;
+}
+
+.currency-not-active > li span{
+    color:#808080;
+    line-height:1.6;
+    font-weight:normal;
+    border-bottom: 1px solid #ccc;
+    cursor:pointer;
+}
+
+.currency-not-active > li span:hover{
+    color:#333;
+    border-bottom: 1px solid #333;
+}
+
+.currency-button::after,
+.bottom-line::after{
+    content: " ";
+    height:2px;
+    background-color:#333;
+    display:block;
+}
+
+.currency-button::after{
+    width:0%;
+    transition:width 0.5s ease;
+}
+
+.bottom-line::after{
+    width:100%;
+}
+
+.currency-button:hover::after{
+    width:100%;
+}

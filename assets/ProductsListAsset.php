@@ -14,6 +14,7 @@ class ProductsListAsset extends AbstractAsset
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
+        'js/setCurrency.js',
         'js/productsList.js',
     ];
     /**

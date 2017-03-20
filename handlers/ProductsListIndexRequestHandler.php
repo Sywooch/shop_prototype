@@ -178,10 +178,10 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 ];
                 $filtersForm = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
                 
-                $changeCurrencyForm = new ChangeCurrencyForm([
+                /*$changeCurrencyForm = new ChangeCurrencyForm([
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
-                ]);
+                ]);*/
                 
                 $userLoginForm = new UserLoginForm();
                 
@@ -203,7 +203,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($categoriesModel ?? null, $subcategoryModel ?? null);

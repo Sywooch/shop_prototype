@@ -1,6 +1,7 @@
 @import url('normalize.css');
 @import url('fonts.css');
 @import url('categories-menu.css');
+@import url('currency-list.css');
 
 body{
     margin:2%;
@@ -30,34 +31,6 @@ button, input, select, textarea{
 
 #main{
     padding-top:15%;
-}
-
-/* Форма вылют */
-
-.currency-list,
-.currency-not-active{
-    list-style:none;
-    padding:0;
-    margin:0;
-}
-
-.currency-active > span{
-    color:#333;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.currency-not-active{
-    position:absolute;
-    padding-top:1.0em;
-}
-
-.currency-not-active > li span{
-    color:#808080;
-    line-height:1.6;
-    font-weight:normal;
-    border-bottom: 1px solid #ccc;
-    cursor:pointer;
 }
 
 /* Разное */
