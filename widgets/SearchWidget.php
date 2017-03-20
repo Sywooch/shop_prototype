@@ -38,7 +38,7 @@ class SearchWidget extends AbstractBaseWidget
             $renderArray['formOptions'] = ['name'=>'search-form'];
             $renderArray['placeholder'] = \Yii::t('base', 'Search');
             $renderArray['fieldName'] = \Yii::$app->params['searchKey'];
-            $renderArray['fieldSize'] = 60;
+            //$renderArray['fieldSize'] = 60;
             $renderArray['text'] = $this->text ?? '';
             $renderArray['button'] = \Yii::t('base', 'Search');
             

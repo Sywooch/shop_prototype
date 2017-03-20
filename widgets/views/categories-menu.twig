@@ -1,0 +1,19 @@
+<nav id="categories-menu-container">
+    <ul class="categories-menu">
+        {% for category in categoriesArray %}
+            {% if category.link %}
+                <li{% if category.active %} class="active"{% endif %}><a href="{{ category.link }}">{{ category.name }}</a>{% if category.subcategoryArray %}<span class="menu-marker">&rsaquo;</span>{% endif %}
+            {% else %}
+                <li class="category-button"><span>{{ category.name }}</span>{% if category.subcategoryArray %}<span class="menu-marker">&rsaquo;</span>{% endif %}
+            {% endif %}
+                {% if category.subcategoryArray %}
+                    <ul class="subcategory-menu disable">
+                        {% for subcategory in category.subcategoryArray %}
+                            <li{% if subcategory.active %} class="active"{% endif %}><a href="{{ subcategory.link }}">{{ subcategory.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

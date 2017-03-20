@@ -25,11 +25,11 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var boolean помечать ли активным родительский пункт, если активен дочерний
      */
-    public $activateParents = true;
+    public $activateParents = false;
     /**
      * @var string template для рендеринга sub-menu
      */
-    public $submenuTemplate = "<ul>{items}</ul>";
+    public $submenuTemplate = '<ul class="subcategory-menu">{items}</ul>';
     /**
      * @var array HTML атрибуты, которые будут применены к тегу-контейнеру меню (ul по-умолчанию)
      */

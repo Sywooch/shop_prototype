@@ -3,23 +3,20 @@
 <html lang="{{ app.language }}">
 
     <head>
-        {{ html.csrfMetaTags() | raw }}
-        <title>{{ title | default('Shop') }}</title>
         <meta charset="{{ app.charset }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {{ html.csrfMetaTags() | raw }}
         {{ this.head() }}
+        <title>{{ title | default('Shop') }}</title>
     </head>
     
     {{ this.beginBody() }}
-        <body>
-            
-            {{ content | raw }}
-            
-        </body>
+    <body>
+        
+        {{ content | raw }}
+        
+    </body>
     {{ this.endBody() }}
-    
-    <hr/>
-    <p>2017 &copy; Shop.com powered by yii2</p>
     
 </html>
 {{ this.endPage() }}

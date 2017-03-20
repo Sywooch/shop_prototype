@@ -2,14 +2,10 @@
 {{ use('app/widgets/ShortCartWidget') }}
 {{ use('app/widgets/CurrencyWidget') }}
 {{ use('app/widgets/SearchWidget') }}
-{{ use('app/widgets/CategoriesMenuWidget') }}
+{{ use('app/widgets/ModCategoriesMenuWidget') }}
 
-{{ user_info_widget_widget(userInfoWidgetConfig) }}
-
-{{ short_cart_widget_widget(shortCartWidgetConfig) }}
-
+{{ mod_categories_menu_widget_widget(categoriesMenuWidgetConfig) }}
 {{ currency_widget_widget(currencyWidgetConfig) }}
-
-{{ search_widget_widget(searchWidgetConfig) }}
-
-{{ categories_menu_widget_widget(categoriesMenuWidgetConfig) }}
+<!--{{ search_widget_widget(searchWidgetConfig) }}-->
+{{ user_info_widget_widget(userInfoWidgetConfig) }}
+{{ short_cart_widget_widget(shortCartWidgetConfig) }}

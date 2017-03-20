@@ -169,7 +169,7 @@ AbstractSendForm.prototype.htmlArraySend = function(event, container1, container
     }
 };
 
-AbstractSendForm.prototype.htmlLiToggleSend = function(event, container) {
+AbstractSendForm.prototype.htmlLiToggleSend = function(event, container, disable=false) {
     try {
         this.baseSend(event, success);
         
@@ -179,6 +179,9 @@ AbstractSendForm.prototype.htmlLiToggleSend = function(event, container) {
             if (typeof data == 'string') {
                 this.form.closest('li').find(container).toggleClass('disable');
                 this.form.closest('li').append(data);
+                if (disable == true) {
+                    this.firstOptionDisable();
+                }
             } else if (typeof data == 'object' && data.length != 0) {
                 this.addErrors(data);
             } else {

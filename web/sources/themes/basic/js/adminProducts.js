@@ -35,7 +35,7 @@ $(function() {
      * Запрашивает форму редактирования товара
      */
     li.on('click', 'form[id^="admin-product-detail-get-form"] > input[type="submit"]', function(event) {
-        send.htmlLiToggleSend(event, '.admin-product-previous-data');
+        send.htmlLiToggleSend(event, '.admin-product-previous-data', true);
         event.preventDefault();
     });
     
@@ -75,4 +75,11 @@ $(function() {
         event.preventDefault();
     });
     
+    /*
+     * Запрашивает подкатегории
+     */
+    $('body').on('change', '#adminproductform-id_category', function(event) {
+        subcategorySend.send(event, '#adminproductform-id_subcategory', true, true);
+        event.preventDefault();
+    });
 });

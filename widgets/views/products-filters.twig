@@ -1,18 +1,20 @@
 {{ use('yii/widgets/ActiveForm') }}
 {% import '@app/widgets/views/macro/hidden-url-form.twig' as formClean %}
 
-<p><strong>{{ header }}</strong></p>
-
-{% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionApply, 'method':'POST'}) %}
-    {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields) | raw }}
-    {{ form.field(modelForm, 'sortingType').dropDownList(sortingTypes) | raw }}
-    {{ form.field(modelForm, 'colors').checkboxList(colors) | raw }}
-    {{ form.field(modelForm, 'sizes').checkboxList(sizes) | raw }}
-    {{ form.field(modelForm, 'brands').checkboxList(brands) | raw }}
-    {{ form.field(modelForm, 'url').hiddenInput({'value':url}).label(false) | raw }}
-    {{ form.field(modelForm, 'category').hiddenInput().label(false) | raw }}
-    {{ form.field(modelForm, 'subcategory').hiddenInput().label(false) | raw }}
-    <input type="submit" value="{{ buttonApply }}">
-{{ active_form_end() }}
-
-{{ formClean.form(modelForm, formSettings, formIdClean, formActionClean, url, buttonClean) }}
+<div id="products-filters">
+    <p><strong>{{ header }}</strong></p>
+    
+    {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionApply, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields) | raw }}
+        {{ form.field(modelForm, 'sortingType').dropDownList(sortingTypes) | raw }}
+        {{ form.field(modelForm, 'colors').checkboxList(colors) | raw }}
+        {{ form.field(modelForm, 'sizes').checkboxList(sizes) | raw }}
+        {{ form.field(modelForm, 'brands').checkboxList(brands) | raw }}
+        {{ form.field(modelForm, 'url').hiddenInput({'value':url}).label(false) | raw }}
+        {{ form.field(modelForm, 'category').hiddenInput().label(false) | raw }}
+        {{ form.field(modelForm, 'subcategory').hiddenInput().label(false) | raw }}
+        <input type="submit" value="{{ buttonApply }}">
+    {{ active_form_end() }}
+    
+    {{ formClean.form(modelForm, formSettings, formIdClean, formActionClean, url, buttonClean) }}
+</div>

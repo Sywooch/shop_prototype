@@ -1,7 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 {% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
-<div class="user-info">
+<div id="user-info">
     <p>{{ header }}</p>
     
     {% if isGuest %}
@@ -9,6 +9,6 @@
     {% else %}
         {{ form.form(modelForm, formSettings, formId, formAction, id, button) }}
         
-        <a href="{{ settingsHref }}">{{ settingsText }}</a>
+        <p><a href="{{ settingsHref }}">{{ settingsText }}</a></p>
     {% endif %}
 </div>

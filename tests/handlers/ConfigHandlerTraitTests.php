@@ -156,7 +156,12 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('categories', $result);
+        $this->assertArrayHasKey('currentUrl', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInternalType('array', $result['categories']);
+        $this->assertInternalType('string', $result['currentUrl']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     /**

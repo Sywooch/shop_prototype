@@ -1,6 +1,6 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/ProductsListAsset') }}
     
@@ -10,8 +10,6 @@
     {{ use('app/widgets/EmptyProductsWidget') }}
     {{ use('app/widgets/ProductsWidget') }}
     {{ use('app/widgets/PaginationWidget') }}
-    
-    {{ include('@theme/common/frontend-common.twig') }}
     
     {{ search_breadcrumbs_widget_widget(searchBreadcrumbsWidgetConfig) }}
     
@@ -29,6 +27,4 @@
         {% endif %}
     {% endif %}
     
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
-    
-{% endblock content %}
+{% endblock %}

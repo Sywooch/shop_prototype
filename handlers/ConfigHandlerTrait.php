@@ -115,6 +115,8 @@ trait ConfigHandlerTrait
             $dataArray = [];
             
             $dataArray['categories'] = $categoriesModelArray;
+            $dataArray['currentUrl'] = Url::current();
+            $dataArray['template'] = 'categories-menu.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

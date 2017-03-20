@@ -1,6 +1,6 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/ProductsListAsset') }}
     
@@ -10,24 +10,18 @@
     {{ use('app/widgets/ProductsWidget') }}
     {{ use('app/widgets/PaginationWidget') }}
     
-    {{ include('@theme/common/frontend-common.twig') }}
-    
-    {{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
+    <!--{{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}-->
     
     {% if filtersWidgetConfig %}
-        <div class="products-filters">
-            {{ filters_widget_widget(filtersWidgetConfig) }}
-        </div>
+        {{ filters_widget_widget(filtersWidgetConfig) }}
     {% endif %}
     
     {% if emptyProductsWidgetConfig %}
-        <div class="products-items">{{ empty_products_widget_widget(emptyProductsWidgetConfig) }}</div>
+        {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
     {% else %}
-        <div class="products-items">{{ products_widget_widget(productsWidgetConfig) }}</div>
+        {{ products_widget_widget(productsWidgetConfig) }}
         
-        <div class="products-pagination">{{ pagination_widget_widget(paginationWidgetConfig) }}</div>
+        {{ pagination_widget_widget(paginationWidgetConfig) }}
     {% endif %}
-
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
     
-{% endblock content %}
+{% endblock %}
