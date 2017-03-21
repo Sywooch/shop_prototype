@@ -3,6 +3,7 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
+use yii\base\Model;
 use app\widgets\ModCurrencyWidget;
 use app\controllers\ProductsListController;
 
@@ -26,6 +27,7 @@ class ModCurrencyWidgetTests extends TestCase
         $reflection = new \ReflectionClass(ModCurrencyWidget::class);
         
         $this->assertTrue($reflection->hasProperty('currency'));
+        $this->assertTrue($reflection->hasProperty('current'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
@@ -43,6 +45,22 @@ class ModCurrencyWidgetTests extends TestCase
         $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Тестирует метод ModCurrencyWidget::setCurrent
+     */
+    public function testSetCurrent()
+    {
+        $current = new class() extends Model {};
+        
+        $this->widget->setCurrent($current);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'current');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->widget);
+        
+        $this->assertInstanceOf(Model::class, $result);
     }
     
     /**
@@ -72,6 +90,23 @@ class ModCurrencyWidgetTests extends TestCase
     
     /**
      * Тестирует метод ModCurrencyWidget::run
+     * если пуст ModCurrencyWidget::current
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: current
+     */
+    public function testRunEmptyCurrent()
+    {
+        $currency = [1=>'ONE', 2=>'TWO'];
+        
+        $reflection = new \ReflectionProperty($this->widget, 'currency');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($this->widget, $currency);
+        
+        $this->widget->run();
+    }
+    
+    /**
+     * Тестирует метод ModCurrencyWidget::run
      * если пуст ModCurrencyWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
@@ -79,10 +114,15 @@ class ModCurrencyWidgetTests extends TestCase
     public function testRunEmptyTemplate()
     {
         $currency = [1=>'ONE', 2=>'TWO'];
+        $mock = new class() {};
         
         $reflection = new \ReflectionProperty($this->widget, 'currency');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($this->widget, $currency);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'current');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($this->widget, $mock);
         
         $this->widget->run();
     }
@@ -112,9 +152,20 @@ class ModCurrencyWidgetTests extends TestCase
             },
         ];
         
+        $current = new class() {
+            public $main = 0;
+            public $id = 2;
+            public $code = 'USD';
+            public $symbol = '&#36;';
+        };
+        
         $reflection = new \ReflectionProperty($this->widget, 'currency');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($this->widget, $currency);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'current');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($this->widget, $current);
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
@@ -124,9 +175,9 @@ class ModCurrencyWidgetTests extends TestCase
         
         $this->assertRegExp('#<div id="currency">#', $result);
         $this->assertRegExp('#<ul class="currency-list">#', $result);
-        $this->assertRegExp('#<li class="currency-button"><span>UAH</span>#', $result);
+        $this->assertRegExp('#<li class="currency-button"><span>USD &\#36;</span>#', $result);
         $this->assertRegExp('#<ul class="currency-not-active disable" data-link=".+" data-action=".+">#', $result);
-        $this->assertRegExp('#<li data-id="2"><span>USD</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="1"><span>UAH</span></li>#', $result);
         $this->assertRegExp('#<li data-id="3"><span>EUR</span></li>#', $result);
     }
 }

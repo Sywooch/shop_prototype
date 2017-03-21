@@ -38,7 +38,6 @@ class ChangeCurrencyForm extends AbstractBaseForm
             [['id', 'url'], StripTagsValidator::class],
             [['id', 'url'], 'required', 'on'=>self::SET],
             [['id'], 'integer'],
-            [['url'], 'string'],
             [['url'], 'match', 'pattern'=>'#^/[a-z-0-9/]+$#u'],
         ];
     }

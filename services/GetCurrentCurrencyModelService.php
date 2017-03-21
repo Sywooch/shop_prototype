@@ -4,7 +4,8 @@ namespace app\services;
 
 use yii\base\{ErrorException,
     Model};
-use app\services\AbstractBaseService;
+use app\services\{AbstractBaseService,
+    CurrencyUpdateService};
 use app\savers\SessionModelSaver;
 use app\finders\{CurrencySessionDBMSFinder,
     MainCurrencyFinder};
@@ -94,7 +95,7 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
     private function updateCurrency(Model $currencyModel): Model
     {
         try {
-            $service = \Yii::$app->registry->get(CurrenyUpdateService::class, [
+            $service = \Yii::$app->registry->get(CurrencyUpdateService::class, [
                 'updateCurrencyModel'=>$currencyModel,
             ]);
             $currencyModel = $service->get();

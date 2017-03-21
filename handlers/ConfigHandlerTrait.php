@@ -32,7 +32,7 @@ trait ConfigHandlerTrait
             
             $dataArray['user'] = $webUser;
             $dataArray['form'] = $form;
-            $dataArray['template'] = 'user-info.twig';
+            $dataArray['template'] = 'user-info-mod.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -64,9 +64,10 @@ trait ConfigHandlerTrait
     /**
      * Возвращает массив конфигурации для виджета CurrencyWidget
      * @param array $currencyArray массив доступных валют
+     * @param Model $current объект текущей валюты
      * @return array
      */
-    private function currencyWidgetConfig(array $currencyArray): array
+    private function currencyWidgetConfig(array $currencyArray, Model $current): array
     {
         try {
             $dataArray = [];
@@ -76,6 +77,7 @@ trait ConfigHandlerTrait
             
             //$dataArray['form'] = $changeCurrencyForm;
             //$dataArray['header'] = \Yii::t('base', 'Currency');
+            $dataArray['current'] = $current;
             $dataArray['template'] = 'currency-form-mod.twig';
             
             return $dataArray;

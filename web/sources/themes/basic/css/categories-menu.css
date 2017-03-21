@@ -40,7 +40,7 @@
 }
 
 .categories-menu > li:first-child::after,
-.category-button:after,
+.category-button::after,
 .bottom-line::after{
     display:block;
     content: " ";
@@ -49,7 +49,7 @@
 }
 
 .categories-menu > li:first-child::after,
-.category-button:after{
+.category-button::after{
     transition:width .5s ease;
     width:0%;
 }
@@ -72,7 +72,7 @@
     color:#808080;
     line-height:1.6;
     font-weight:normal;
-    border-bottom: 1px solid #ccc
+    border-bottom: 1px solid #808080
 }
 
 .subcategory-menu a:hover{

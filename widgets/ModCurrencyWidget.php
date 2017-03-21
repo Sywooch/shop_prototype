@@ -41,10 +41,10 @@ class ModCurrencyWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['currency'] = array_filter($this->currency, function($elm) {
-                return ($elm->main === 0);
+                return ($elm->id !== $this->current->id);
             });
             
-            $renderArray['current'] = $this->current->code;
+            $renderArray['current'] = $this->current;
             $renderArray['action'] = Url::to(['/currency/set']);
             $renderArray['link'] = Url::current();
             

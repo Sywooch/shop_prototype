@@ -17,7 +17,8 @@ class m160913_132853_create_currency_table extends Migration
             'code'=>$this->char(3)->notNull()->unique(),
             'exchange_rate'=>$this->decimal(9, 5)->notNull()->defaultValue(1.00000),
             'main'=>$this->boolean()->notNull()->defaultValue(false),
-            'update_date'=>$this->integer(10)->unsigned()->notNull()->defaultValue(0)
+            'update_date'=>$this->integer(10)->unsigned()->notNull()->defaultValue(0),
+            'symbol'=>$this->string(10)->notNull()->defaultValue(''),
         ], 'ENGINE=InnoDB');
     }
 

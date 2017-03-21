@@ -32,7 +32,7 @@ class CurrencyIdFinder extends AbstractBaseFinder
                 }
                 
                 $query = CurrencyModel::find();
-                $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]', '[[currency.update_date]]']);
+                $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]', '[[currency.update_date]]', '[[currency.symbol]]']);
                 $query->where(['[[currency.id]]'=>$this->id]);
                 
                $this->storage = $query->one();

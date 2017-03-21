@@ -24,7 +24,7 @@ class MainCurrencyFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $query = CurrencyModel::find();
-                $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]']);
+                $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]', '[[currency.symbol]]']);
                 $query->where(['[[currency.main]]'=>true]);
                 
                 $this->storage = $query->one();

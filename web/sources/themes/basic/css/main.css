@@ -2,6 +2,7 @@
 @import url('fonts.css');
 @import url('categories-menu.css');
 @import url('currency-list.css');
+@import url('user-info.css');
 
 body{
     margin:2%;
@@ -49,4 +50,8 @@ ul.pagination li{
 
 .disable{
     display:none;
+}
+
+.separate{
+    margin:0 0.5em;
 }

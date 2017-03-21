@@ -39,12 +39,16 @@ class CurrencyForm extends AbstractBaseForm
      * @var int флаг, отмечает основную валюту приложения
      */
     public $main;
+    /**
+     * @var string unicode символ валюты
+     */
+    public $symbol;
     
     public function scenarios()
     {
         return [
             self::DELETE=>['id'],
-            self::CREATE=>['code', 'main'],
+            self::CREATE=>['code', 'main', 'symbol'],
             self::BASE_CHANGE=>['id', 'main'],
         ];
     }
@@ -52,11 +56,12 @@ class CurrencyForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['id', 'code', 'main'], StripTagsValidator::class],
+            [['id', 'code', 'main', 'symbol'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['code'], 'required', 'on'=>self::CREATE],
+            [['code', 'symbol'], 'required', 'on'=>self::CREATE],
             [['id', 'main'], 'required', 'on'=>self::BASE_CHANGE],
             [['code'], 'string', 'length'=>3, 'on'=>self::CREATE],
+            [['symbol'], 'match', 'pattern'=>'/^[&#0-9;]+$/u', 'on'=>self::CREATE],
             [['id', 'main'], 'integer'],
             [['id'], DeleteCurrencyIsBaseValidator::class, 'on'=>self::DELETE],
             [['code'], CreateCurrencyExistsCodeValidator::class, 'on'=>self::CREATE],

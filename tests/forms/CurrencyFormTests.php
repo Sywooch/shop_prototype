@@ -38,6 +38,7 @@ class CurrencyFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('code'));
         $this->assertTrue($reflection->hasProperty('main'));
+        $this->assertTrue($reflection->hasProperty('symbol'));
     }
     
     /**
@@ -56,10 +57,12 @@ class CurrencyFormTests extends TestCase
         $form->attributes = [
             'code'=>'CODE',
             'main'=>1,
+            'symbol'=>'&#8364;'
         ];
         
         $this->assertSame('CODE', $form->code);
         $this->assertSame(1, $form->main);
+        $this->assertSame('&#8364;', $form->symbol);
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::BASE_CHANGE]);
         $form->attributes = [
@@ -100,11 +103,12 @@ class CurrencyFormTests extends TestCase
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->validate();
         
-        $this->assertCount(1, $form->errors);
+        $this->assertCount(2, $form->errors);
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->attributes = [
-            'code'=>'CODE'
+            'code'=>'CODE',
+            'symbol'=>'&#8364;'
         ];
         $form->validate();
         
@@ -112,7 +116,8 @@ class CurrencyFormTests extends TestCase
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->attributes = [
-            'code'=>self::$dbClass->currency['currency_1']['code']
+            'code'=>self::$dbClass->currency['currency_1']['code'],
+            'symbol'=>'&#8364;'
         ];
         $form->validate();
         
@@ -120,7 +125,8 @@ class CurrencyFormTests extends TestCase
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->attributes = [
-            'code'=>'COD'
+            'code'=>'COD',
+            'symbol'=>'&#8364;'
         ];
         $form->validate();
         
@@ -128,7 +134,17 @@ class CurrencyFormTests extends TestCase
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->attributes = [
-            'code'=>'JPY'
+            'code'=>'JPY',
+            'symbol'=>'U+20AC'
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
+        $form->attributes = [
+            'code'=>'JPY',
+            'symbol'=>'&#8364;'
         ];
         $form->validate();
         

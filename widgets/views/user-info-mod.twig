@@ -1,0 +1,12 @@
+{{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
+
+<div id="user-info">
+    {% if isGuest %}
+        <a href="{{ loginHref }}">{{ loginText }}</a><span class="separate">/</span><a href="{{registrationHref }}">{{ registrationText }}</a>
+    {% else %}
+        {{ form.form(modelForm, formSettings, formId, formAction, id, button) }}
+        
+        <p><a href="{{ settingsHref }}">{{ settingsText }}</a></p>
+    {% endif %}
+</div>

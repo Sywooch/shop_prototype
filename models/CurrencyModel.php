@@ -51,9 +51,9 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     public function scenarios()
     {
         return [
-            self::DBMS=>['id', 'code', 'exchange_rate', 'main', 'update_date'],
+            self::DBMS=>['id', 'code', 'exchange_rate', 'main', 'update_date', 'symbol'],
             self::UPDATE=>['id', 'exchange_rate', 'update_date'],
-            self::CREATE=>['code', 'exchange_rate', 'main', 'update_date'],
+            self::CREATE=>['code', 'exchange_rate', 'main', 'update_date', 'symbol'],
             self::DELETE=>['id'],
             self::BASE_CHANGE=>['id', 'main', 'exchange_rate', 'update_date'],
             self::SESSION=>['id'],
@@ -64,7 +64,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     {
         return [
             [['id', 'exchange_rate', 'update_date'], 'required', 'on'=>self::UPDATE],
-            [['code', 'exchange_rate', 'update_date'], 'required', 'on'=>self::CREATE],
+            [['code', 'exchange_rate', 'update_date', 'symbol'], 'required', 'on'=>self::CREATE],
             [['main'], 'default', 'value'=>0, 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id', 'main', 'exchange_rate', 'update_date'], 'required', 'on'=>self::BASE_CHANGE],

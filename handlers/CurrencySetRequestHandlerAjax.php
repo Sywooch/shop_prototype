@@ -5,7 +5,6 @@ namespace app\handlers;
 use yii\base\ErrorException;
 use yii\web\Response;
 use app\handlers\AbstractBaseHandler;
-use app\forms\ChangeCurrencyForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
 use app\models\CurrencyModel;
@@ -34,6 +33,15 @@ class CurrencySetRequestHandlerAjax extends AbstractBaseHandler
                 }
                 if (empty($url)) {
                     throw new ErrorException($this->emptyError('url'));
+                }
+                
+                $id = filter_var($id, FILTER_VALIDATE_INT);
+                if ($id === false) {
+                    throw new ErrorException($this->invalidError('id'));
+                }
+                $url = filter_var($url, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^/[a-z-0-9/]+$#u']]);
+                if ($url === false) {
+                    throw new ErrorException($this->invalidError('url'));
                 }
                 
                 $currencyModel = new CurrencyModel(['scenario'=>CurrencyModel::SESSION]);

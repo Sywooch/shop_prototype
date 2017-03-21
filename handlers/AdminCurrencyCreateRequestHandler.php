@@ -8,7 +8,6 @@ use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\forms\CurrencyForm;
-use app\services\CurrenyUpdateService;
 use app\finders\{CurrencyFinder,
     MainCurrencyFinder};
 use app\widgets\AdminCurrencyWidget;

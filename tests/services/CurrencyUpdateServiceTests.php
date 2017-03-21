@@ -4,16 +4,16 @@ namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
 use yii\base\Model;
-use app\services\CurrenyUpdateService;
+use app\services\CurrencyUpdateService;
 use app\models\CurrencyModel;
 use app\helpers\HashHelper;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\tests\DbManager;
 
 /**
- * Тестирует класс CurrenyUpdateService
+ * Тестирует класс CurrencyUpdateService
  */
-class CurrenyUpdateServiceTests extends TestCase
+class CurrencyUpdateServiceTests extends TestCase
 {
     private static $dbClass;
     private $service;
@@ -32,21 +32,21 @@ class CurrenyUpdateServiceTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->service = new CurrenyUpdateService();
+        $this->service = new CurrencyUpdateService();
     }
     
     /**
-     * Тестирует свойства CurrenyUpdateService
+     * Тестирует свойства CurrencyUpdateService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CurrenyUpdateService::class);
+        $reflection = new \ReflectionClass(CurrencyUpdateService::class);
         
         $this->assertTrue($reflection->hasProperty('updateCurrencyModel'));
     }
     
     /**
-     * Тестирует метод CurrenyUpdateService::setUpdateCurrencyModel
+     * Тестирует метод CurrencyUpdateService::setUpdateCurrencyModel
      */
     public function testSetUpdateCurrencyModel()
     {
@@ -62,8 +62,8 @@ class CurrenyUpdateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrenyUpdateService::get
-     * если пуст CurrenyUpdateService::updateCurrencyModel
+     * Тестирует метод CurrencyUpdateService::get
+     * если пуст CurrencyUpdateService::updateCurrencyModel
      * @expectedException ErrorException
      * Отсутствуют необходимые данные: updateCurrencyModel
      */
@@ -73,7 +73,7 @@ class CurrenyUpdateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrenyUpdateService::get
+     * Тестирует метод CurrencyUpdateService::get
      */
     public function testGet()
     {

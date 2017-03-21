@@ -105,21 +105,24 @@ class ConfigHandlerTraitTests extends TestCase
     public function testCurrencyWidgetConfig()
     {
         $currencyArray = [new class() extends CurrencyModel {}];
+        $current = new class() extends Model {};
         
         $reflection = new \ReflectionMethod($this->handler, 'currencyWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $currencyArray);
+        $result = $reflection->invoke($this->handler, $currencyArray, $current);
         
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('currency', $result);
         //$this->assertArrayHasKey('form', $result);
         //$this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('current', $result);
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['currency']);
         //$this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         //$this->assertInternalType('string', $result['header']);
+        $this->assertInstanceOf(Model::class, $result['current']);
         $this->assertInternalType('string', $result['template']);
     }
     

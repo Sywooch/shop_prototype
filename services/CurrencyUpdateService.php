@@ -15,7 +15,7 @@ use app\helpers\CurrencyHelper;
  * Проверяет актуальность курса для валюты,
  * при необходимости обновляет данные
  */
-class CurrenyUpdateService extends AbstractBaseService
+class CurrencyUpdateService extends AbstractBaseService
 {
     /**
      * @var Model
@@ -62,7 +62,7 @@ class CurrenyUpdateService extends AbstractBaseService
     }
     
     /**
-     * Присваивает значение CurrenyUpdateService::updateCurrencyModel
+     * Присваивает значение CurrencyUpdateService::updateCurrencyModel
      * @param Model $updateCurrencyModel
      */
     public function setUpdateCurrencyModel(Model $updateCurrencyModel)

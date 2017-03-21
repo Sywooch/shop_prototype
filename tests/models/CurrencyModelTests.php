@@ -31,6 +31,7 @@ class CurrencyModelTests extends TestCase
         $this->assertArrayHasKey('exchange_rate', $model->attributes);
         $this->assertArrayHasKey('main', $model->attributes);
         $this->assertArrayHasKey('update_date', $model->attributes);
+        $this->assertArrayHasKey('symbol', $model->attributes);
     }
     
     /**
@@ -54,7 +55,8 @@ class CurrencyModelTests extends TestCase
             'code'=>'USD',
             'exchange_rate'=>23.17,
             'main'=>1,
-            'update_date'=>time()
+            'update_date'=>time(),
+            'symbol'=>'&#8364;'
         ];
         
         $this->assertEquals(2, $model->id);
@@ -62,12 +64,13 @@ class CurrencyModelTests extends TestCase
         $this->assertEquals(23.17, $model->exchange_rate);
         $this->assertEquals(1, $model->main);
         $this->assertEquals(time(), $model->update_date);
+        $this->assertEquals('&#8364;', $model->symbol);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::UPDATE]);
         $model->attributes = [
             'id'=>2,
             'exchange_rate'=>1.056,
-            'update_date'=>time()
+            'update_date'=>time(),
         ];
         
         $this->assertEquals(2, $model->id);
@@ -79,13 +82,15 @@ class CurrencyModelTests extends TestCase
             'code'=>'USD',
             'exchange_rate'=>1.056,
             'main'=>1,
-            'update_date'=>time()
+            'update_date'=>time(),
+            'symbol'=>'&#8364;'
         ];
         
         $this->assertEquals('USD', $model->code);
         $this->assertEquals(1.056, $model->exchange_rate);
         $this->assertEquals(1, $model->main);
         $this->assertEquals(time(), $model->update_date);
+        $this->assertEquals('&#8364;', $model->symbol);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::DELETE]);
         $model->attributes = [
@@ -130,7 +135,7 @@ class CurrencyModelTests extends TestCase
         $model->attributes = [
             'id'=>2,
             'exchange_rate'=>1.056,
-            'update_date'=>time()
+            'update_date'=>time(),
         ];
         $model->validate();
         
@@ -140,13 +145,14 @@ class CurrencyModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertCount(3, $model->errors);
+        $this->assertCount(4, $model->errors);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::CREATE]);
         $model->attributes = [
             'code'=>'USD',
             'exchange_rate'=>1.056,
-            'update_date'=>time()
+            'update_date'=>time(),
+            'symbol'=>'&#8364;'
         ];
         $model->validate();
         
