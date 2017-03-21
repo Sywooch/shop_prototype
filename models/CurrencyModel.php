@@ -73,7 +73,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     }
     
     /**
-     * Возвращает курс текущей валюты
+     * Возвращает курс валюты
      */
     public function exchangeRate()
     {
@@ -85,12 +85,24 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     }
     
     /**
-     * Возвращает код текущей валюты
+     * Возвращает код валюты
      */
     public function code()
     {
         try {
             return $this->code;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает unicode символ валюты
+     */
+    public function symbol()
+    {
+        try {
+            return $this->symbol;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

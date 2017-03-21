@@ -53,7 +53,7 @@ trait ConfigHandlerTrait
             
             $dataArray['purchases'] = $ordersCollection;
             $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['template'] = 'short-cart.twig';
+            $dataArray['template'] = 'short-cart-mod.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

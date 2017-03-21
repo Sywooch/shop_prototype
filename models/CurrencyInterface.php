@@ -9,4 +9,5 @@ interface CurrencyInterface
 {
     public function exchangeRate();
     public function code();
+    public function symbol();
 }

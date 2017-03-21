@@ -44,4 +44,11 @@ $(function() {
         event.preventDefault();
     });
     
+    /* 
+     * Инициирует отправку формы logout
+    */
+    $('#user-info').on('click', '.logout', function(event) {
+        $('#user-logout-form').submit();
+    });
+    
 });

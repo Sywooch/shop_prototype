@@ -1,0 +1,18 @@
+{{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/post-button.twig' as formDelete %}
+
+{% macro baseText(bagText, cost) %}
+    {{ bagText }}<span class="separate">/</span>{{ cost | raw }}
+{% endmacro %}
+
+{% import _self as function %}
+
+<div id="short-cart">
+    {{ function.baseText(bagText, cost) }}
+    
+    {% if goods %}
+        <a href="{{ toCartHref }}">{{ function.baseText(bagText, cost) }}</a>
+        
+        {{ formDelete.form(formSettings, formId, formAction, button) }}
+    {% endif %}
+</div>

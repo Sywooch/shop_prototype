@@ -232,4 +232,18 @@ class CurrencyModelTests extends TestCase
         
         $this->assertEquals('USD', $result);
     }
+    
+    /**
+     * Тестирует метод CurrencyModel::symbol
+     */
+    public function testSymbol()
+    {
+        $model = new CurrencyModel([
+            'symbol'=>'&#8364;',
+        ]);
+        
+        $result = $model ->symbol();
+        
+        $this->assertEquals('&#8364;', $result);
+    }
 }

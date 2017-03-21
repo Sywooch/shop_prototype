@@ -48,15 +48,16 @@ class ModUserInfoWidget extends AbstractBaseWidget
             $renderArray = [];
             
             if ($isGuest === true) {
-                $placeholder = \Yii::t('base', 'Guest');
                 $renderArray['loginHref'] = Url::to(['/user/login']);
                 $renderArray['loginText'] = \Yii::t('base', 'Login');
                 $renderArray['registrationHref'] = Url::to(['/user/registration']);
                 $renderArray['registrationText'] = \Yii::t('base', 'Registration');
             } else {
                 $user = $this->user->identity;
-                $placeholder = $user->email->email;
                 
+                $renderArray['email'] = $user->email->email;
+                $renderArray['settingsHref'] = Url::to(['/account/index']);
+                $renderArray['logoutText'] = \Yii::t('base', 'Logout');
                 $renderArray['id'] = $user->id;
                 
                 $renderArray['modelForm'] = $this->form;
@@ -69,13 +70,9 @@ class ModUserInfoWidget extends AbstractBaseWidget
                 $renderArray['formSettings']['validateOnChange'] = false;
                 $renderArray['formSettings']['validateOnBlur'] = false;
                 $renderArray['formSettings']['validateOnType'] = false;
-                
-                $renderArray['settingsHref'] = Url::to(['/account/index']);
-                $renderArray['settingsText'] = \Yii::t('base', 'Account settings');
             }
             
             $renderArray['isGuest'] = $isGuest;
-            $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>$placeholder]);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

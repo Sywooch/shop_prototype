@@ -1,11 +1,15 @@
 {{ use('app/widgets/ModUserInfoWidget') }}
-{{ use('app/widgets/ShortCartWidget') }}
+{{ use('app/widgets/ModShortCartWidget') }}
 {{ use('app/widgets/ModCurrencyWidget') }}
 {{ use('app/widgets/SearchWidget') }}
 {{ use('app/widgets/ModCategoriesMenuWidget') }}
 
-{{ mod_categories_menu_widget_widget(categoriesMenuWidgetConfig) }}
-{{ mod_currency_widget_widget(currencyWidgetConfig) }}
-<!--{{ search_widget_widget(searchWidgetConfig) }}-->
-{{ mod_user_info_widget_widget(userInfoWidgetConfig) }}
-{{ short_cart_widget_widget(shortCartWidgetConfig) }}
+<div class="header-left">
+    {{ mod_categories_menu_widget_widget(categoriesMenuWidgetConfig) }}
+</div>
+<div class="header-right">
+    {{ mod_currency_widget_widget(currencyWidgetConfig) }}
+    <!--{{ search_widget_widget(searchWidgetConfig) }}-->
+    {{ mod_user_info_widget_widget(userInfoWidgetConfig) }}
+    {{ mod_short_cart_widget_widget(shortCartWidgetConfig) }}
+</div>

@@ -5,8 +5,8 @@
     {% if isGuest %}
         <a href="{{ loginHref }}">{{ loginText }}</a><span class="separate">/</span><a href="{{registrationHref }}">{{ registrationText }}</a>
     {% else %}
-        {{ form.form(modelForm, formSettings, formId, formAction, id, button) }}
+        <a href="{{ settingsHref }}">{{ email }}</a><span class="separate">/</span><span class="logout">{{ logoutText }}</span>
         
-        <p><a href="{{ settingsHref }}">{{ settingsText }}</a></p>
+        {{ form.form(modelForm, formSettings, formId, formAction, id, button) }}
     {% endif %}
 </div>

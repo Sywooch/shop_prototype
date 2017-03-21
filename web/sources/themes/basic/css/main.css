@@ -1,8 +1,5 @@
 @import url('normalize.css');
 @import url('fonts.css');
-@import url('categories-menu.css');
-@import url('currency-list.css');
-@import url('user-info.css');
 
 body{
     margin:2%;
@@ -28,30 +25,131 @@ button, input, select, textarea{
     flex-direction:row;
     justify-content:space-between;
     align-items:flex-start;
+    /*border-bottom:1px solid #333;*/
 }
 
 #main{
     padding-top:15%;
 }
 
-/* Разное */
-
-ul.breadcrumb,
-ul.pagination{
-    list-style:none;
-    margin:0;
-    padding:0;
-}
-
-ul.breadcrumb li,
-ul.pagination li{
-    display:inline;
-}
-
-.disable{
+.disable,
+#user-logout-form{
     display:none;
 }
 
-.separate{
-    margin:0 0.5em;
+.separate {
+    margin:0 0.3em;
+}
+
+.header-right{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+#currency,
+#user-info,
+.categories-menu > li{
+    margin-right:2.0em;
+}
+
+.categories-menu,
+.subcategory-menu,
+.currency-list,
+.currency-not-active{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.categories-menu{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-content:flex-start;
+}
+
+.categories-menu > li:last-child{
+    margin-right:0;
+}
+
+.categories-menu a,
+.category-button span,
+.currency-button > span,
+#user-info a,
+.logout,
+#short-cart a{
+    color:#333;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:normal;
+    display:inline-block
+}
+
+.menu-marker{
+    display:inline-block;
+    transform:rotate(90deg);
+    font-size:1.0em;
+    line-height:0;
+    vertical-align:middle;
+    margin-left:0.5em
+}
+
+.categories-menu > li:first-child::after,
+.category-button::after,
+.bottom-line::after,
+.currency-button::after,
+.bottom-line::after,
+#user-info a::after,
+.logout::after,
+#short-cart a::after{
+    margin-top:3px;
+    display:block;
+    content: " ";
+    height:2px;
+    background-color:#333;
+}
+
+.categories-menu > li:first-child::after,
+.category-button::after,
+.currency-button::after,
+#user-info a::after,
+.logout::after,
+#short-cart a::after{
+    transition:width .2s ease;
+    width:0%;
+}
+
+.categories-menu > li:first-child:hover::after,
+.category-button:hover::after,
+.currency-button:hover::after,
+.bottom-line::after,
+#user-info a:hover::after,
+.logout:hover::after,
+#short-cart a:hover::after{
+    width:100%;
+}
+
+.subcategory-menu,
+.currency-not-active{
+    position:absolute;
+    padding-top:1.0em;
+    padding-left:0.2em;
+}
+
+.subcategory-menu a,
+.currency-not-active span{
+    color:#808080;
+    line-height:1.5;
+    font-weight:normal;
+    border-bottom: 1px solid #808080;
+    cursor:pointer;
+}
+
+.subcategory-menu a:hover,
+.currency-not-active span:hover,
+.subcategory-menu li.active a{
+    color:#333;
+    border-bottom: 1px solid #333;
 }
