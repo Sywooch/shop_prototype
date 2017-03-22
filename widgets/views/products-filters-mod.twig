@@ -2,9 +2,40 @@
 {% import '@app/widgets/views/macro/hidden-url-form.twig' as formClean %}
 
 <div id="products-filters">
-    <div class="products-filters-header">{{ header }}</div>
+    <div class="products-filters-header disable">{{ header }}<span class="menu-marker">&rsaquo;</span></div>
     
-    <div class="products-filters-form">
+    <div class="filters-group">
+        <ul class="products-filters-sorting-field">
+            {% for key,value in sortingFields %}
+                <li data-id-sorting-field="{{ key }}"><span>{{ value }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <ul class="products-filters-sorting-types">
+            {% for key,value in sortingTypes %}
+                <li data-id-sorting-types="{{ key }}"><span>{{ value }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <ul class="products-filters-colors">
+            {% for key,value in colors %}
+                <li data-id-color="{{ key }}"><span>{{ value }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <ul class="products-filters-sizes">
+            {% for key,value in sizes %}
+                <li data-id-size="{{ key }}"><span>{{ value }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <ul class="products-filters-buttons">
+            <li id="apply"><span>Применить</span></li>
+            <li id="cancel"><span>Сбросить</span></li>
+        </ul>
+    </div>
+    
+    <div class="products-filters-form disable">
         {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionApply, 'method':'POST'}) %}
             {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields).label(false) | raw }}
             {{ form.field(modelForm, 'sortingType').dropDownList(sortingTypes).label(false) | raw }}

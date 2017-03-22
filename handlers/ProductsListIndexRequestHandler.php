@@ -291,7 +291,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             
             $dataArray['form'] = $filtersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
-            $dataArray['template'] = 'products-filters.twig';
+            $dataArray['template'] = 'products-filters-mod.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

@@ -13,6 +13,9 @@ $components = [
                     'auto_reload'=>true,
                     'autoescape'=>'html'
                 ],
+                'extensions'=>[
+                    'app\extensions\twig\ExtTwig',
+                ],
             ]
         ],
         'theme'=>[

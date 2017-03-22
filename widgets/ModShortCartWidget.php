@@ -58,23 +58,10 @@ class ModShortCartWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['goods'] = $this->goods;
             $renderArray['bagText'] = \Yii::t('base', 'Cart');
             $renderArray['cost'] = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->symbol();
-            $renderArray['goods'] = $this->goods;
-            
-            $renderArray['goodsText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
             $renderArray['toCartHref'] = Url::to(['/cart/index']);
-            //$renderArray['toCartText'] = \Yii::t('base', 'To cart');
-            
-            $renderArray['formId'] = 'clean-cart-form';
-            $renderArray['formAction'] = Url::to(['/cart/clean']);
-            $renderArray['button'] = \Yii::t('base', 'To clean cart');
-            
-            $renderArray['formSettings']['ajaxValidation'] = false;
-            $renderArray['formSettings']['validateOnSubmit'] = false;
-            $renderArray['formSettings']['validateOnChange'] = false;
-            $renderArray['formSettings']['validateOnBlur'] = false;
-            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -83,8 +70,8 @@ class ModShortCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchasesCollectionInterface свойству ModShortCartWidget::purchases
-     * @param object $collection PurchasesCollectionInterface
+     * Присваивает значение ModShortCartWidget::purchases
+     * @param PurchasesCollectionInterface $collection
      */
     public function setPurchases(PurchasesCollectionInterface $collection)
     {
@@ -96,7 +83,7 @@ class ModShortCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyInterface свойству ModShortCartWidget::currency
+     * Присваивает значение ModShortCartWidget::currency
      * @param CurrencyInterface $model
      */
     public function setCurrency(CurrencyInterface $model)
@@ -109,7 +96,7 @@ class ModShortCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству ModShortCartWidget::template
+     * Присваивает значение ModShortCartWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)
