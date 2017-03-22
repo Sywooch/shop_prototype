@@ -1,9 +1,9 @@
 <div id="currency">
     <ul class="currency-list">
-        <li class="currency-button"><span>{{ current.code }} {{ current.symbol | raw }}</span>
+        <li><span class="currency-button">{{ current.code }} {{ current.symbol | raw }}</span>
             <ul class="currency-not-active disable" data-link="{{ link }}" data-action="{{ action }}" data-token="{{ app.request.csrfToken }}">
                 {% for item in currency %}
-                    <li data-id="{{ item.id }}"><span>{{ item.code }}</span></li>
+                    <li data-id="{{ item.id }}"><span class="currency-item">{{ item.code }}</span></li>
                 {% endfor %}
             </ul>
         </li>

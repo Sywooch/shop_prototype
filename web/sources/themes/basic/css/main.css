@@ -2,7 +2,7 @@
 @import url('fonts.css');
 
 body{
-    margin:2%;
+    margin:0 2% 2% 2%;
     font-family:'PTSans', Verdana, Tahoma, Arial, Helvetica, sans-serif;
     font-size:1.0em;
     line-height:1.2;
@@ -25,15 +25,14 @@ button, input, select, textarea{
     flex-direction:row;
     justify-content:space-between;
     align-items:flex-start;
+    box-sizing:border-box;
+    border-bottom:4px solid #1a1a1a;
+    padding:2% 0;
+    background-color:rgba(250,250,250,0.85)
 }
 
 #main{
-    padding-top:12%;
-}
-
-.disable,
-#user-logout-form{
-    display:none;
+    padding-top:10%;
 }
 
 .separate {
@@ -53,6 +52,10 @@ button, input, select, textarea{
     margin-right:2.0em;
 }
 
+.categories-menu > li:last-child{
+    margin-right:0;
+}
+
 .categories-menu,
 .subcategory-menu,
 .currency-list,
@@ -69,13 +72,9 @@ button, input, select, textarea{
     align-content:flex-start;
 }
 
-.categories-menu > li:last-child{
-    margin-right:0;
-}
-
 .categories-menu a,
-.category-button span,
-.currency-button > span,
+.category-button,
+.currency-button,
 #user-info a,
 .logout,
 #short-cart a{
@@ -95,7 +94,7 @@ button, input, select, textarea{
     margin-left:0.5em
 }
 
-.categories-menu > li:first-child::after,
+.all-catalog::after,
 .category-button::after,
 .bottom-line::after,
 .currency-button::after,
@@ -110,7 +109,7 @@ button, input, select, textarea{
     background-color:#1a1a1a;
 }
 
-.categories-menu > li:first-child::after,
+.all-catalog::after,
 .category-button::after,
 .currency-button::after,
 #user-info a::after,
@@ -120,7 +119,7 @@ button, input, select, textarea{
     width:0%;
 }
 
-.categories-menu > li:first-child:hover::after,
+.all-catalog:hover::after,
 .category-button:hover::after,
 .currency-button:hover::after,
 .bottom-line::after,
@@ -132,14 +131,13 @@ button, input, select, textarea{
 
 .subcategory-menu,
 .currency-not-active{
-    position:absolute;
     padding-top:1.0em;
-    padding-left:0.2em;
+    padding-left:0.0em;
 }
 
 .subcategory-menu a,
-.currency-not-active span,
-.filters-group li span{
+.currency-item,
+.products-filters-item{
     color:#808080;
     line-height:1.5;
     font-weight:normal;
@@ -148,27 +146,67 @@ button, input, select, textarea{
 }
 
 .subcategory-menu a:hover,
-.currency-not-active span:hover,
-.subcategory-menu li.active a{
+.currency-item:hover,
+.subcategory-menu .active,
+.products-filters-item:hover,
+.checked span{
     color:#1a1a1a;
     border-bottom: 1px solid #1a1a1a;
 }
 
 .filters-group{
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
     justify-content:flex-start;
-    align-items:flex-start;
+    align-items:stretch;
+    margin:1em 0;
 }
 
 .filters-group ul{
     list-style:none;
     padding:0;
-    margin:0 4em 0 0;
+    margin:0 2em 0 0;
+    flex-wrap:wrap
 }
 
-.filters-group li span{
+.filters-group ul:last-child{
+    margin:0;
+}
+
+.products-filters-header{
+    margin:1em 0 0.5em 0;
+}
+
+.products-filters-header span{
+    color:#1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.products-filters-li{
     display:inline-block;
-    margin-bottom:0.2em;
+    margin-right:0.4em
 }
 
+.products-filters-buttons .products-filters-header{
+    display:inline-block;
+    margin-right:1em
+}
+
+#filters-apply,
+#filters-cancel{
+    border-bottom: 2px solid #1a1a1a;
+}
+
+.color-green{
+    width:12px;
+    height:12px;
+    background-color:red;
+    display:inline-block;
+    vertical-align:middle;
+    margin-right:0.5em
+}
+
+.disable,
+#user-logout-form{
+    display:none;
+}

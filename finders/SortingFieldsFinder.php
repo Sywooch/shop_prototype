@@ -24,8 +24,8 @@ class SortingFieldsFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $this->storage = [
-                    'date'=>\Yii::t('base', 'Sorting by date'),
-                    'price'=>\Yii::t('base', 'Sorting by price')
+                    'date'=>\Yii::t('base', 'by date'),
+                    'price'=>\Yii::t('base', 'by price')
                 ];
             }
             

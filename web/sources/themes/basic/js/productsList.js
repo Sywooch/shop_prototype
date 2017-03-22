@@ -1,12 +1,6 @@
 $(function() {
     
-    function Send() {
-        AbstractSendForm.call(this);
-    };
-    Send.prototype = Object.create(AbstractSendForm.prototype);
-    var send = new Send();
-    
-    
+    var send = new AbstractSendForm();
     var setCurrency = new SetCurrency();
     
     /* 
@@ -21,19 +15,19 @@ $(function() {
     /* 
      * Управляет видимостью списка категорий товаров
     */
-    $('#categories-menu-container').on('click', '.category-button > span', function(event) {
-        var li = $(event.target).closest('li');
-        li.find('.subcategory-menu').toggleClass('disable');
-        li.toggleClass('bottom-line');
+    $('#categories-menu-container').on('click', '.category-button', function(event) {
+        var target = $(event.target);
+        target.closest('li').find('.subcategory-menu').toggleClass('disable');
+        target.toggleClass('bottom-line');
     });
     
     /* 
      * Управляет видимостью списка доступных валют
     */
-    $('#currency').on('click', '.currency-button > span', function(event) {
-        var li = $(event.target).closest('li');
-        li.find('.currency-not-active').toggleClass('disable');
-        li.toggleClass('bottom-line');
+    $('#currency').on('click', '.currency-button', function(event) {
+        var target = $(event.target);
+        target.closest('li').find('.currency-not-active').toggleClass('disable');
+        target.toggleClass('bottom-line');
     });
     
     /* 
@@ -49,6 +43,19 @@ $(function() {
     */
     $('#user-info').on('click', '.logout', function(event) {
         $('#user-logout-form').submit();
+    });
+    
+    $('#categories-menu-container').on('click', '.filters-visible', function(event) {
+        var filters = $('.filters-group');
+        $('.header-left').append(filters);
+        filters.toggleClass('disable');
+    });
+    
+    /*
+     * Помечает фильтр как выбранный
+     */
+    $('#products-filters').on('click', '.products-filters-item > span', function(event) {
+        $(event.target).closest('.products-filters-item').toggleClass('checked');
     });
     
 });

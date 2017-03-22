@@ -24,8 +24,8 @@ class SortingTypesFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $this->storage = [
-                    SORT_ASC=>\Yii::t('base', 'Sort ascending'),
-                    SORT_DESC=>\Yii::t('base', 'Sort descending')
+                    SORT_ASC=>\Yii::t('base', 'by ascending'),
+                    SORT_DESC=>\Yii::t('base', 'by descending')
                 ];
             }
             

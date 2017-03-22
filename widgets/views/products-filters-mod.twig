@@ -4,34 +4,45 @@
 <div id="products-filters">
     <div class="products-filters-header disable">{{ header }}<span class="menu-marker">&rsaquo;</span></div>
     
-    <div class="filters-group">
+    <div class="filters-group disable">
         <ul class="products-filters-sorting-field">
+            <li class="products-filters-header"><span>Сортировать:</span></li>
             {% for key,value in sortingFields %}
-                <li data-id-sorting-field="{{ key }}"><span>{{ value }}</span></li>
+                <li class="products-filters-li" data-id-sorting-field="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
-        <ul class="products-filters-sorting-types">
+        <!--<ul class="products-filters-sorting-types">
+            <li class="products-filters-header"><span>Тип</span></li>
             {% for key,value in sortingTypes %}
-                <li data-id-sorting-types="{{ key }}"><span>{{ value }}</span></li>
+                <li class="products-filters-li" data-id-sorting-types="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
-        </ul>
+        </ul>-->
         
         <ul class="products-filters-colors">
+            <li class="products-filters-header"><span>Цвета:</span></li>
             {% for key,value in colors %}
-                <li data-id-color="{{ key }}"><span>{{ value }}</span></li>
+                <li class="products-filters-li" data-id-color="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-sizes">
+            <li class="products-filters-header"><span>Размеры:</span></li>
             {% for key,value in sizes %}
-                <li data-id-size="{{ key }}"><span>{{ value }}</span></li>
+                <li class="products-filters-li" data-id-size="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
+        <!--<ul class="products-filters-brands">
+            <li class="products-filters-header"><span>Бренды:</span></li>
+            {% for key,value in brands %}
+                <li class="products-filters-li" data-id-brand="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+            {% endfor %}
+        </ul>-->
+        
         <ul class="products-filters-buttons">
-            <li id="apply"><span>Применить</span></li>
-            <li id="cancel"><span>Сбросить</span></li>
+            <li class="products-filters-header"><span id="filters-apply">Применить</span></li>
+            <li class="products-filters-header"><span id="filters-cancel">Сбросить</span></li>
         </ul>
     </div>
     
