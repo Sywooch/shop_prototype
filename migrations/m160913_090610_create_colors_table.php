@@ -14,7 +14,8 @@ class m160913_090610_create_colors_table extends Migration
     {
         $this->createTable('colors', [
             'id' => $this->primaryKey(3)->unsigned()->notNull(),
-            'color'=>$this->string(25)->notNull()->unique()
+            'color'=>$this->string(25)->notNull()->unique(),
+            'hexcolor'=>$this->char(7)->notNull()->defaultValue(''),
         ], 'ENGINE=InnoDB');
     }
 

@@ -3,7 +3,8 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\widgets\AbstractBaseWidget;
 use app\forms\FiltersForm;
 
@@ -80,6 +81,7 @@ class FiltersWidget extends AbstractBaseWidget
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             $renderArray['colors'] = $this->colors;
+            $renderArray['colorsArray'] = ArrayHelper::map($this->colors, 'id', 'color');
             $renderArray['sizes'] = $this->sizes;
             $renderArray['brands'] = $this->brands;
             $renderArray['url'] = Url::current();

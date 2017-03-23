@@ -1,5 +1,6 @@
 <nav id="categories-menu-container">
     <ul class="categories-menu">
+        <li><span class="category-button filters-visible">Фильтры</span><span class="menu-marker">&rsaquo;</span></li>
         {% for category in categoriesArray %}
             {% if category.link %}
                 <li><a href="{{ category.link }}" class="all-catalog">{{ category.name }}</a>
@@ -15,6 +16,5 @@
                 {% endif %}
             </li>
         {% endfor %}
-        <li><span class="category-button filters-visible">Фильтры</span><span class="menu-marker">&rsaquo;</span></li>
     </ul>
 </nav>

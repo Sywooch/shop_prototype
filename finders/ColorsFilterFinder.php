@@ -33,7 +33,7 @@ class ColorsFilterFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $query = ColorsModel::find();
-                $query->select(['[[colors.id]]', '[[colors.color]]']);
+                $query->select(['[[colors.id]]', '[[colors.color]]', '[[colors.hexcolor]]']);
                 $query->distinct();
                 $query->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
                 $query->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');

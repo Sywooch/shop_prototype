@@ -2,6 +2,7 @@ $(function() {
     
     var send = new AbstractSendForm();
     var setCurrency = new SetCurrency();
+    var filtersCheck = new FiltersCheck();
     
     /* 
      * Отправляет форму с данными для очистки корзины, 
@@ -54,8 +55,6 @@ $(function() {
     /*
      * Помечает фильтр как выбранный
      */
-    $('#products-filters').on('click', '.products-filters-item > span', function(event) {
-        $(event.target).closest('.products-filters-item').toggleClass('checked');
-    });
+    filtersCheck.run();
     
 });

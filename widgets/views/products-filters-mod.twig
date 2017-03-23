@@ -2,55 +2,38 @@
 {% import '@app/widgets/views/macro/hidden-url-form.twig' as formClean %}
 
 <div id="products-filters">
-    <div class="products-filters-header disable">{{ header }}<span class="menu-marker">&rsaquo;</span></div>
-    
     <div class="filters-group disable">
-        <ul class="products-filters-sorting-field">
+        <ul class="products-filters-sorting-field" data-form-item="filtersform-sortingfield">
             <li class="products-filters-header"><span>Сортировать:</span></li>
             {% for key,value in sortingFields %}
-                <li class="products-filters-li" data-id-sorting-field="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+                <li class="products-filters-li" data-id="{{ key }}"><span class="products-filters-item">{{ value | raw }}</span></li>
             {% endfor %}
         </ul>
         
-        <!--<ul class="products-filters-sorting-types">
-            <li class="products-filters-header"><span>Тип</span></li>
-            {% for key,value in sortingTypes %}
-                <li class="products-filters-li" data-id-sorting-types="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
-            {% endfor %}
-        </ul>-->
-        
-        <ul class="products-filters-colors">
+        <ul class="products-filters-colors" data-form-item="filtersform-colors">
             <li class="products-filters-header"><span>Цвета:</span></li>
-            {% for key,value in colors %}
-                <li class="products-filters-li" data-id-color="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+            {% for color in colors %}
+                <li class="products-filters-li" data-id="{{ color.id }}"><span class="color-hex" style="background-color:{{ color.hexcolor }}"></span><span class="products-filters-item">{{ color.color }}</span></li>
             {% endfor %}
         </ul>
         
-        <ul class="products-filters-sizes">
+        <ul class="products-filters-sizes" data-form-item="filtersform-sizes">
             <li class="products-filters-header"><span>Размеры:</span></li>
             {% for key,value in sizes %}
-                <li class="products-filters-li" data-id-size="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+                <li class="products-filters-li" data-id="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
-        <!--<ul class="products-filters-brands">
-            <li class="products-filters-header"><span>Бренды:</span></li>
-            {% for key,value in brands %}
-                <li class="products-filters-li" data-id-brand="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
-            {% endfor %}
-        </ul>-->
-        
         <ul class="products-filters-buttons">
-            <li class="products-filters-header"><span id="filters-apply">Применить</span></li>
-            <li class="products-filters-header"><span id="filters-cancel">Сбросить</span></li>
+            <li class="products-filters-li"><span id="filters-apply" class="products-filters-button">Применить</span></li>
+            <li class="products-filters-li"><span id="filters-cancel" class="products-filters-button">Сбросить</span></li>
         </ul>
     </div>
     
     <div class="products-filters-form disable">
         {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionApply, 'method':'POST'}) %}
             {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields).label(false) | raw }}
-            {{ form.field(modelForm, 'sortingType').dropDownList(sortingTypes).label(false) | raw }}
-            {{ form.field(modelForm, 'colors').checkboxList(colors) | raw }}
+            {{ form.field(modelForm, 'colors').checkboxList(colorsArray) | raw }}
             {{ form.field(modelForm, 'sizes').checkboxList(sizes) | raw }}
             {{ form.field(modelForm, 'brands').checkboxList(brands) | raw }}
             {{ form.field(modelForm, 'url').hiddenInput({'value':url}).label(false) | raw }}

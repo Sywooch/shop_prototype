@@ -17,7 +17,7 @@ use app\finders\{BrandsFilterFinder,
     ProductsFiltersSessionFinder,
     PurchasesSessionFinder,
     SizesFilterFinder,
-    SortingFieldsFinder,
+    ModSortingFieldsFinder,
     SortingTypesFinder,
     SubcategorySeocodeFinder};
 use app\forms\{AbstractBaseForm,
@@ -159,7 +159,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 $brandsArray = $finder->find();
                 
-                $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
+                $finder = \Yii::$app->registry->get(ModSortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
@@ -260,7 +260,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             ArrayHelper::multisort($colorsArray, 'color');
-            $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
+            $dataArray['colors'] = $colorsArray;
             
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');

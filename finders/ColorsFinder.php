@@ -25,7 +25,7 @@ class ColorsFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $query = ColorsModel::find();
-                $query->select(['[[colors.id]]', '[[colors.color]]']);
+                $query->select(['[[colors.id]]', '[[colors.color]]', '[[colors.hexcolor]]']);
                 
                 $this->storage = $query->all();
             }

@@ -4,12 +4,12 @@ namespace app\tests\validators;
 
 use PHPUnit\Framework\TestCase;
 use yii\base\Model;
-use app\validators\SortingFieldExistsValidator;
+use app\validators\ModSortingFieldExistsValidator;
 
 /**
- * Тестирует класс SortingFieldExistsValidator
+ * Тестирует класс ModSortingFieldExistsValidator
  */
-class SortingFieldExistsValidatorTests extends TestCase
+class ModSortingFieldExistsValidatorTests extends TestCase
 {
     private $validator;
     
@@ -17,11 +17,11 @@ class SortingFieldExistsValidatorTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->validator = new SortingFieldExistsValidator();
+        $this->validator = new ModSortingFieldExistsValidator();
     }
     
     /**
-     * Тестирует метод SortingFieldExistsValidator::validateAttribute
+     * Тестирует метод ModSortingFieldExistsValidator::validateAttribute
      * @expectedException ErrorException
      * @expectedExceptionMessage Недопустимый диапазон данных: sortingField
      */
