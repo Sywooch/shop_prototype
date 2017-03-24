@@ -12,11 +12,14 @@
     
     {{ this.beginBody() }}
     <body>
-        
-        <header id="header">{% block header %}{% endblock %}</header>
-        <main id="main">{% block main %}{% endblock %}</main>
-        <footer id="footer">{% block footer %}{% endblock %}</footer>
-        
+            <header id="header">{% block header %}{% endblock %}</header>
+            
+            <div id="content">
+                <div id="sidebar"></div>
+                <main id="main">{% block main %}{% endblock %}</main>
+            </div>
+            
+            <footer id="footer">{% block footer %}{% endblock %}</footer>
     </body>
     {{ this.endBody() }}
     

@@ -1,14 +1,10 @@
 <nav id="categories-menu-container">
     <ul class="categories-menu">
-        <li><span class="category-button filters-visible">Фильтры</span><span class="menu-marker">&rsaquo;</span></li>
+        <!--<li><span class="filters-visible">Фильтры</span><span class="menu-marker">&rsaquo;</span></li>-->
         {% for category in categoriesArray %}
-            {% if category.link %}
-                <li><a href="{{ category.link }}" class="all-catalog">{{ category.name }}</a>
-            {% else %}
-                <li><span class="category-button">{{ category.name }}</span>{% if category.subcategoryArray %}<span class="menu-marker">&rsaquo;</span>{% endif %}
-            {% endif %}
+            <li><a href="{{ category.link }}" class="category-button">{{ category.name }}</a>{% if category.subcategoryArray %}<span class="menu-marker">&rsaquo;</span>{% endif %}
                 {% if category.subcategoryArray %}
-                    <ul class="subcategory-menu disable">
+                    <ul class="subcategory-menu disable" data-category="{{ category.name }}">
                         {% for subcategory in category.subcategoryArray %}
                             <li><a href="{{ subcategory.link }}"{% if subcategory.active %} class="active"{% endif %}>{{ subcategory.name }}</a></li>
                         {% endfor %}

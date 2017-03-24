@@ -8,8 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\finders\{BrandsFilterFinder,
-    CategoriesFinder,
+use app\finders\{CategoriesFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
     CurrencyFinder,
@@ -18,10 +17,8 @@ use app\finders\{BrandsFilterFinder,
     PurchasesSessionFinder,
     SizesFilterFinder,
     ModSortingFieldsFinder,
-    SortingTypesFinder,
     SubcategorySeocodeFinder};
 use app\forms\{AbstractBaseForm,
-    ChangeCurrencyForm,
     FiltersForm,
     UserLoginForm};
 use app\services\GetCurrentCurrencyModelService;
@@ -32,7 +29,7 @@ use app\validators\StripTagsValidator;
  * Обрабатывает запрос на получение данных 
  * для страницы каталога товаров
  */
-class ProductsListIndexRequestHandler extends AbstractBaseHandler
+class ModProductsListIndexRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -153,23 +150,11 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 $sizesArray = $finder->find();
                 
-                /*$finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
-                    'category'=>$category, 
-                    'subcategory'=>$subcategory
-                ]);
-                $brandsArray = $finder->find();*/
-                
                 $finder = \Yii::$app->registry->get(ModSortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
                 }
-                
-                /*$finder = \Yii::$app->registry->get(SortingTypesFinder::class);
-                $sortingTypesArray = $finder->find();
-                if (empty($sortingTypesArray)) {
-                    throw new ErrorException($this->emptyError('sortingTypesArray'));
-                }*/
                 
                 $filtersFormConfig = [
                     'url'=>Url::current(),
@@ -177,11 +162,6 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     'subcategory'=>$subcategory
                 ];
                 $filtersForm = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
-                
-                /*$changeCurrencyForm = new ChangeCurrencyForm([
-                    'id'=>$currentCurrencyModel->id,
-                    'url'=>Url::current()
-                ]);*/
                 
                 $userLoginForm = new UserLoginForm();
                 
@@ -197,8 +177,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 }
                 
-                if (!empty($colorsArray) && !empty($sizesArray) && !empty($brandsArray)) {
-                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $filtersForm);
+                if (!empty($colorsArray) && !empty($sizesArray)) {
+                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $sortingFieldsArray, $filtersForm);
                 }
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
@@ -248,13 +228,11 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
      * Возвращает массив конфигурации для виджета FiltersWidget
      * @param array $colorsArray
      * @param array $sizesArray
-     * @param array $brandsArray
      * @param array $sortingFieldsArray
-     * @param array $sortingTypesArray
      * @param AbstractBaseForm $filtersForm
      * @return array
      */
-    private function filtersWidgetConfig(array $colorsArray, array $sizesArray, array $brandsArray, array $sortingFieldsArray, AbstractBaseForm $filtersForm): array
+    private function filtersWidgetConfig(array $colorsArray, array $sizesArray, array $sortingFieldsArray, AbstractBaseForm $filtersForm): array
     {
         try {
             $dataArray = [];
@@ -265,14 +243,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            ArrayHelper::multisort($brandsArray, 'brand');
-            $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
-            
             asort($sortingFieldsArray, SORT_STRING);
             $dataArray['sortingFields'] = $sortingFieldsArray;
-            
-            /*asort($sortingTypesArray, SORT_STRING);
-            $dataArray['sortingTypes'] = $sortingTypesArray;*/
             
             if (empty($filtersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
@@ -285,16 +257,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $filtersForm->sortingField = str_replace(['{field}', '{type}'], [$filtersForm->sortingField, $type], '{field} {type}');
             }
             
-            /*if (empty($filtersForm->sortingType)) {
-                foreach ($sortingTypesArray as $key=>$val) {
-                    if ($key === \Yii::$app->params['sortingType']) {
-                        $filtersForm->sortingType = $key;
-                    }
-                }
-            }*/
-            
             $dataArray['form'] = $filtersForm;
-            //$dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'products-filters-mod.twig';
             
             return $dataArray;

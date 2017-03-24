@@ -122,8 +122,8 @@ class FiltersFormTests extends TestCase
     public function testFields()
     {
         $form = new FiltersForm();
-        $form->sortingField = 'name';
-        $form->sortingType = SORT_ASC;
+        $form->sortingField = 'name descending';
+        //$form->sortingType = SORT_ASC;
         $form->url = '/shop/main-7';
         $form->category = 'man';
         $form->subcategory = 'shoes';
@@ -131,7 +131,7 @@ class FiltersFormTests extends TestCase
         $result = $form->toArray();
         
         $this->assertSame('name', $result['sortingField']);
-        $this->assertSame(SORT_ASC, $result['sortingType']);
+        $this->assertSame(SORT_DESC, $result['sortingType']);
         $this->assertSame([], $result['colors']);
         $this->assertSame([], $result['sizes']);
         $this->assertSame([], $result['brands']);

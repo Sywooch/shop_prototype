@@ -2,12 +2,13 @@
 @import url('fonts.css');
 
 body{
-    margin:0 2% 2% 2%;
+    margin:0;
     font-family:'PTSans', Verdana, Tahoma, Arial, Helvetica, sans-serif;
     font-size:1.0em;
     line-height:1.2;
     background-color:#f5f5f5;
     color:#1a1a1a;
+    margin:0 2em;
 }
 
 img{
@@ -21,18 +22,34 @@ button, input, select, textarea{
 #header{
     width:96%;
     position:fixed;
+    z-index:100;
     display:flex;
     flex-direction:row;
     justify-content:space-between;
     align-items:flex-start;
     box-sizing:border-box;
-    border-bottom:4px solid #1a1a1a;
-    padding:2% 0;
+    border-bottom:5px solid #1a1a1a;
+    padding:1em 0;
     background-color:rgba(245,245,245,0.85)
 }
 
+#content{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-start;
+    box-sizing:border-box;
+    padding-top:10%
+}
+
+#sidebar{
+    box-sizing:border-box;
+    padding:0 4em 2em 0;
+    width:15%
+}
+
 #main{
-    padding-top:10%;
+    flex-grow:2
 }
 
 .separate {
@@ -72,9 +89,14 @@ button, input, select, textarea{
     align-content:flex-start;
 }
 
+.subcategory-menu{
+    margin-bottom:3em
+}
+
 .categories-menu a,
 .category-button,
 .currency-button,
+.filters-visible,
 #user-info a,
 .logout,
 #short-cart a{
@@ -96,6 +118,7 @@ button, input, select, textarea{
 
 .all-catalog::after,
 .category-button::after,
+.filters-visible::after,
 .bottom-line::after,
 .currency-button::after,
 .bottom-line::after,
@@ -111,6 +134,7 @@ button, input, select, textarea{
 
 .all-catalog::after,
 .category-button::after,
+.filters-visible::after,
 .currency-button::after,
 #user-info a::after,
 .logout::after,
@@ -121,6 +145,7 @@ button, input, select, textarea{
 
 .all-catalog:hover::after,
 .category-button:hover::after,
+.filters-visible:hover::after,
 .currency-button:hover::after,
 .bottom-line::after,
 #user-info a:hover::after,
@@ -129,20 +154,24 @@ button, input, select, textarea{
     width:100%;
 }
 
-.subcategory-menu,
 .currency-not-active{
-    margin:1em 0 0 0;
+    margin:0 0 0 0;
 }
 
 .subcategory-menu a,
 .currency-item,
 .products-filters-item,
 .products-filters-button{
-    color:#808080;
-    line-height:1.5;
+    color:#999999;
+    line-height:1.7;
     font-weight:normal;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #999999;
     cursor:pointer;
+    text-decoration:none;
+}
+
+.subcategory-menu a{
+    border-bottom:1px solid #cb8589;
 }
 
 .subcategory-menu a:hover,
@@ -155,12 +184,25 @@ button, input, select, textarea{
     border-bottom: 1px solid #1a1a1a;
 }
 
+.subcategory-menu a:hover{
+    border-bottom:1px solid #cb8589;
+}
+
 .filters-group{
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    align-items:stretch;
+    background-color:#f5f5f5;
+    position:relative;
+    z-index:10
+}
+
+.products-filters-header{
+    color:#999999;
+    display:block;
     margin:1em 0 0 0;
+    border-bottom:2px solid #1a1a1a
+}
+
+.products-filters-header.first{
+    margin-top:0
 }
 
 .products-filters-sorting-field,
@@ -169,21 +211,11 @@ button, input, select, textarea{
 .products-filters-buttons{
     list-style:none;
     padding:0;
-    margin:0 0 1em 0;
+    margin:0;
 }
 
 .products-filters-buttons{
-    margin-bottom:0;
-}
-
-.products-filters-header{
-    color:#CCC;
-    margin-bottom:0.25em;
-}
-
-.products-filters-li{
-    display:inline-block;
-    margin-right:0.4em
+    margin-top:1em;
 }
 
 .color-hex{
@@ -192,6 +224,13 @@ button, input, select, textarea{
     display:inline-block;
     vertical-align:middle;
     margin-right:0.4em;
+}
+
+ul,
+ol{
+    list-style:none;
+    margin:0;
+    padding:0;
 }
 
 .disable,

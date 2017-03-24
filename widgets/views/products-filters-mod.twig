@@ -2,31 +2,31 @@
 {% import '@app/widgets/views/macro/hidden-url-form.twig' as formClean %}
 
 <div id="products-filters">
-    <div class="filters-group disable">
+    <div class="filters-group">
         <ul class="products-filters-sorting-field" data-form-item="filtersform-sortingfield">
-            <li class="products-filters-header"><span>Сортировать:</span></li>
+            <li><span class="products-filters-header first">Сортировать</span></li>
             {% for key,value in sortingFields %}
-                <li class="products-filters-li" data-id="{{ key }}"><span class="products-filters-item">{{ value | raw }}</span></li>
+                <li data-id="{{ key }}"><span class="products-filters-item">{{ value | raw }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-colors" data-form-item="filtersform-colors">
-            <li class="products-filters-header"><span>Цвета:</span></li>
+            <li><span class="products-filters-header">Цвета</span></li>
             {% for color in colors %}
-                <li class="products-filters-li" data-id="{{ color.id }}"><span class="color-hex" style="background-color:{{ color.hexcolor }}"></span><span class="products-filters-item">{{ color.color }}</span></li>
+                <li data-id="{{ color.id }}"><span class="color-hex" style="background-color:{{ color.hexcolor }}"></span><span class="products-filters-item">{{ color.color }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-sizes" data-form-item="filtersform-sizes">
-            <li class="products-filters-header"><span>Размеры:</span></li>
+            <li><span class="products-filters-header">Размеры</span></li>
             {% for key,value in sizes %}
-                <li class="products-filters-li" data-id="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+                <li data-id="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-buttons">
-            <li class="products-filters-li"><span id="filters-apply" class="products-filters-button">Применить</span></li>
-            <li class="products-filters-li"><span id="filters-cancel" class="products-filters-button">Сбросить</span></li>
+            <li><span id="filters-apply" class="products-filters-button">Применить</span></li>
+            <li><span id="filters-cancel" class="products-filters-button">Сбросить</span></li>
         </ul>
     </div>
     
@@ -35,11 +35,9 @@
             {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields).label(false) | raw }}
             {{ form.field(modelForm, 'colors').checkboxList(colorsArray) | raw }}
             {{ form.field(modelForm, 'sizes').checkboxList(sizes) | raw }}
-            {{ form.field(modelForm, 'brands').checkboxList(brands) | raw }}
             {{ form.field(modelForm, 'url').hiddenInput({'value':url}).label(false) | raw }}
             {{ form.field(modelForm, 'category').hiddenInput().label(false) | raw }}
             {{ form.field(modelForm, 'subcategory').hiddenInput().label(false) | raw }}
-            <input type="submit" value="{{ buttonApply }}">
         {{ active_form_end() }}
         
         {{ formClean.form(modelForm, formSettings, formIdClean, formActionClean, url, buttonClean) }}

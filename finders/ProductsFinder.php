@@ -50,7 +50,8 @@ class ProductsFinder extends AbstractBaseFinder
                 $this->storage = new ProductsCollection(['pagination'=>new LightPagination()]);
                 
                 $query = ProductsModel::find();
-                $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
+                $query->distinct();
+                $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]', '[[products.date]]']);
                 $query->where(['[[products.active]]'=>true]);
                 $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                 $query->andWhere(['[[categories.active]]'=>true]);

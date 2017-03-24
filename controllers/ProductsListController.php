@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\GetAction;
-use app\handlers\{ProductsListIndexRequestHandler,
+use app\handlers\{ModProductsListIndexRequestHandler,
+    ProductsListIndexRequestHandler,
     ProductsListSearchRequestHandler};
 use app\filters\VisitorsCounterFilter;
 
@@ -19,7 +20,7 @@ class ProductsListController extends Controller
         return [
             'index'=>[
                 'class'=>GetAction::class,
-                'handler'=>new ProductsListIndexRequestHandler(),
+                'handler'=>new ModProductsListIndexRequestHandler(),
                 'view'=>'products-list.twig'
             ],
             'search'=>[

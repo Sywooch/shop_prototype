@@ -5,7 +5,7 @@
     {{ register_asset_bundle('app/assets/ProductsListAsset') }}
     
     {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
-    {{ use('app/widgets/FiltersWidget') }}
+    {{ use('app/widgets/ModFiltersWidget') }}
     {{ use('app/widgets/EmptyProductsWidget') }}
     {{ use('app/widgets/ProductsWidget') }}
     {{ use('app/widgets/PaginationWidget') }}
@@ -13,7 +13,7 @@
     <!--{{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}-->
     
     {% if filtersWidgetConfig %}
-        {{ filters_widget_widget(filtersWidgetConfig) }}
+        {{ mod_filters_widget_widget(filtersWidgetConfig) }}
     {% endif %}
     
     {% if emptyProductsWidgetConfig %}

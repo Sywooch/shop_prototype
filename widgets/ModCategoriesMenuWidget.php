@@ -5,6 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
+use app\helpers\StringHelper;
 
 /**
  * Формирует меню
@@ -62,13 +63,13 @@ class ModCategoriesMenuWidget extends AbstractBaseWidget
                 
                 $pack = [
                     'name'=>$category->name,
-                    'link'=>false,
+                    'link'=>Url::to([$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]),
                     'active'=>false
                 ];
                 
                 $name = \Yii::t('base', 'All');
                 $link = Url::to([$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]);
-                $active = ($this->currentUrl === $link);
+                $active = (StringHelper::cutPage($this->currentUrl) === $link);
                 $pack['subcategoryArray'][] = [
                     'name'=>$name,
                     'link'=>$link,
@@ -81,7 +82,7 @@ class ModCategoriesMenuWidget extends AbstractBaseWidget
                         }
                         $name = $subcategory->name;
                         $link = Url::to([$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]);
-                        $active = ($this->currentUrl === $link);
+                        $active = (StringHelper::cutPage($this->currentUrl) === $link);
                         $pack['subcategoryArray'][] = [
                             'name'=>$name,
                             'link'=>$link,

@@ -1,7 +1,7 @@
 function FiltersCheck()
 {
     this.run = function() {
-        $('#header').on('click', '.products-filters-item', function(event) {
+        $('#sidebar').on('click', '.products-filters-item', function(event) {
             var target = $(event.target);
             var ul = target.closest('ul');
             
@@ -27,12 +27,32 @@ function FiltersCheck()
             }
         });
         
-        $('#header').on('click', '#filters-apply', function(event) {
+        $('#sidebar').on('click', '#filters-apply', function(event) {
             $('#products-filters-form').submit();
         });
         
-        $('#header').on('click', '#filters-cancel', function(event) {
+        $('#sidebar').on('click', '#filters-cancel', function(event) {
             $('#products-filters-clean').submit();
         });
+        
+        this.mark();
     };
+    
+    this.mark = function() {
+        var sortingfield = $('#filtersform-sortingfield').find('option[selected]').val();
+        $('.products-filters-sorting-field').find('li[data-id="' + sortingfield + '"]').children('.products-filters-item').addClass('checked');
+        
+        var colors = $('#filtersform-colors').find('input[checked]');
+        colors.each(function(index, elm) {
+            var colorfield = $(elm).val();
+            $('.products-filters-colors').find('li[data-id="' + colorfield + '"]').children('.products-filters-item').addClass('checked');
+        });
+        
+        var sizes = $('#filtersform-sizes').find('input[checked]');
+        sizes.each(function(index, elm) {
+            var sizefield = $(elm).val();
+            $('.products-filters-sizes').find('li[data-id="' + sizefield + '"]').children('.products-filters-item').addClass('checked');
+        });
+        
+    }
 }
