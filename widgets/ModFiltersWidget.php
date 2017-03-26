@@ -75,6 +75,12 @@ class ModFiltersWidget extends AbstractBaseWidget
             $renderArray['formSettings']['validateOnBlur'] = false;
             $renderArray['formSettings']['validateOnType'] = false;
             
+            $renderArray['sortingHeader'] = \Yii::t('base', 'Sorting');
+            $renderArray['colorsHeader'] = \Yii::t('base', 'Colors');
+            $renderArray['sizesHeader'] = \Yii::t('base', 'Sizes');
+            $renderArray['applyHeader'] = \Yii::t('base', 'Apply');
+            $renderArray['resetHeader'] = \Yii::t('base', 'Reset');
+            
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

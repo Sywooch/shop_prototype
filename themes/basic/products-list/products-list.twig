@@ -7,7 +7,7 @@
     {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
     {{ use('app/widgets/ModFiltersWidget') }}
     {{ use('app/widgets/EmptyProductsWidget') }}
-    {{ use('app/widgets/ProductsWidget') }}
+    {{ use('app/widgets/ModProductsWidget') }}
     {{ use('app/widgets/PaginationWidget') }}
     
     <!--{{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}-->
@@ -19,7 +19,7 @@
     {% if emptyProductsWidgetConfig %}
         {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
     {% else %}
-        {{ products_widget_widget(productsWidgetConfig) }}
+        {{ mod_products_widget_widget(productsWidgetConfig) }}
         
         {{ pagination_widget_widget(paginationWidgetConfig) }}
     {% endif %}

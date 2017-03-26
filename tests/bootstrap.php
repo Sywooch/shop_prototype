@@ -18,6 +18,7 @@ $config['components']['mailer']['fileTransportPath'] = '@app/tests/sources/mail/
 $config['aliases']['@imagesroot'] = '@app/tests/sources/images/products';
 $config['aliases']['@imagestemp'] = '@app/tests/sources/images/temp';
 $config['aliases']['@csvroot'] = '@app/tests/sources/csv';
+$config['params']['limit'] = 3;
 
 Yii::$classMap['yii\web\UploadedFile'] = '@app/tests/MockUploadedFile.php';
 

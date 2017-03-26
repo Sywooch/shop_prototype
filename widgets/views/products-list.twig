@@ -1,10 +1,10 @@
-<ol id="products-items">
+<ol class="products-items">
 {% for product in collection %}
-    <li class="product-id-{{ product.id }}">
+    <li class="product-id">
         <!--<a href="{{ product.linkHref }}">{{ product.linkText }}</a>
         <br>{{ product.short_description }}
         <br>{{ priceText }}: <span class="price">{{ product.price }}</span>-->
-        <br><a href="{{ product.linkHref }}">{{ product.image | raw }}</a>
+        <a href="{{ product.linkHref }}">{{ product.image | raw }}</a>
     </li>
 {% endfor %}
 </ol>

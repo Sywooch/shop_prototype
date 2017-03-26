@@ -329,7 +329,7 @@ trait ConfigHandlerTrait
             
             $dataArray['products'] = $productsCollection;
             $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['template'] = 'products-list.twig';
+            $dataArray['template'] = 'products-list-mod.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -787,6 +787,25 @@ trait ConfigHandlerTrait
             $dataArray['form'] = $mailingsForm;
             $dataArray['header'] = \Yii::t('base', 'Mailings');
             $dataArray['template'] = 'admin-mailings.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета FrontendFooterWidget
+     * @param AbstractBaseForm $subscribeForm
+     * @return array
+     */
+    private function frontendFooterWidgetConfig(AbstractBaseForm $subscribeForm): array
+    {
+        try{
+            $dataArray = [];
+            
+            $dataArray['form'] = $subscribeForm;
+            $dataArray['template'] = 'user-mailing-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

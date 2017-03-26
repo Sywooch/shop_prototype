@@ -4,29 +4,29 @@
 <div id="products-filters">
     <div class="filters-group">
         <ul class="products-filters-sorting-field" data-form-item="filtersform-sortingfield">
-            <li><span class="products-filters-header first">Сортировать</span></li>
+            <li><span class="products-filters-header first">{{ sortingHeader }}</span></li>
             {% for key,value in sortingFields %}
                 <li data-id="{{ key }}"><span class="products-filters-item">{{ value | raw }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-colors" data-form-item="filtersform-colors">
-            <li><span class="products-filters-header">Цвета</span></li>
+            <li><span class="products-filters-header">{{ colorsHeader }}</span></li>
             {% for color in colors %}
                 <li data-id="{{ color.id }}"><span class="color-hex" style="background-color:{{ color.hexcolor }}"></span><span class="products-filters-item">{{ color.color }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-sizes" data-form-item="filtersform-sizes">
-            <li><span class="products-filters-header">Размеры</span></li>
+            <li><span class="products-filters-header">{{ sizesHeader }}</span></li>
             {% for key,value in sizes %}
                 <li data-id="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
             {% endfor %}
         </ul>
         
         <ul class="products-filters-buttons">
-            <li><span id="filters-apply" class="products-filters-button">Применить</span></li>
-            <li><span id="filters-cancel" class="products-filters-button">Сбросить</span></li>
+            <li><span id="filters-apply" class="products-filters-button">{{ applyHeader }}</span></li>
+            <li><span id="filters-cancel" class="products-filters-button">{{ resetHeader }}</span></li>
         </ul>
     </div>
     

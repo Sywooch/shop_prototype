@@ -160,6 +160,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesBreadcrumbsWidgetConfig', $result);
         $this->assertArrayHasKey('filtersWidgetConfig', $result);
+        $this->assertArrayHasKey('frontendFooterWidgetConfig', $result);
         
         $this->assertArrayNotHasKey('emptyProductsWidgetConfig', $result);
         
@@ -172,6 +173,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesBreadcrumbsWidgetConfig']);
         $this->assertInternalType('array', $result['filtersWidgetConfig']);
+        $this->assertInternalType('array', $result['frontendFooterWidgetConfig']);
     }
     
     /**
@@ -207,6 +209,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesBreadcrumbsWidgetConfig', $result);
         $this->assertArrayHasKey('filtersWidgetConfig', $result);
+        $this->assertArrayHasKey('frontendFooterWidgetConfig', $result);
         
         $this->assertArrayNotHasKey('emptyProductsWidgetConfig', $result);
         
@@ -219,6 +222,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesBreadcrumbsWidgetConfig']);
         $this->assertInternalType('array', $result['filtersWidgetConfig']);
+        $this->assertInternalType('array', $result['frontendFooterWidgetConfig']);
     }
     
     /**
@@ -273,6 +277,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('emptyProductsWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesBreadcrumbsWidgetConfig', $result);
         $this->assertArrayHasKey('filtersWidgetConfig', $result);
+        $this->assertArrayHasKey('frontendFooterWidgetConfig', $result);
         
         $this->assertArrayNotHasKey('productsWidgetConfig', $result);
         $this->assertArrayNotHasKey('paginationWidgetConfig', $result);
@@ -285,6 +290,7 @@ class ModProductsListIndexRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['emptyProductsWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesBreadcrumbsWidgetConfig']);
         $this->assertInternalType('array', $result['filtersWidgetConfig']);
+        $this->assertInternalType('array', $result['frontendFooterWidgetConfig']);
         
         $session->remove($key);
         $session->close();

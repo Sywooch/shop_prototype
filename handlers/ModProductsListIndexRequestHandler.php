@@ -20,6 +20,7 @@ use app\finders\{CategoriesFinder,
     SubcategorySeocodeFinder};
 use app\forms\{AbstractBaseForm,
     FiltersForm,
+    SubscribeForm,
     UserLoginForm};
 use app\services\GetCurrentCurrencyModelService;
 use app\helpers\HashHelper;
@@ -165,6 +166,8 @@ class ModProductsListIndexRequestHandler extends AbstractBaseHandler
                 
                 $userLoginForm = new UserLoginForm();
                 
+                $subscribeForm = new SubscribeForm();
+                
                 $dataArray = [];
                 
                 if ($productsCollection->isEmpty() === true) {
@@ -187,6 +190,7 @@ class ModProductsListIndexRequestHandler extends AbstractBaseHandler
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($categoriesModel ?? null, $subcategoryModel ?? null);
+                $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
                 
                 $this->dataArray = $dataArray;
             }

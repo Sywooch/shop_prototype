@@ -70,7 +70,7 @@ $(function() {
             string += this.toString(filters);
             
             this.sidebar.html(string);
-            //this.setEvents();
+            this.setEvents();
             this.current();
         };
         
@@ -100,10 +100,10 @@ $(function() {
             /*
             * Управляет видимостью фильтров
             */
-            /*this.container.on('click', '.filters-visible', this, function(event) {
+            this.container.on('click', '.filters-visible', this, function(event) {
                 event.data.sidebar.children('.filters-group').toggleClass('disable');
                 $(event.target).toggleClass('bottom-line');
-            });*/
+            });
         };
         
         this.current = function() {
@@ -119,6 +119,8 @@ $(function() {
                         elm.addClass('bottom-line');
                     }
                 });
+            } else {
+                $('#categories-menu-container').children('.categories-menu').children('li').first().children('.category-button').addClass('bottom-line');
             }
         };
         

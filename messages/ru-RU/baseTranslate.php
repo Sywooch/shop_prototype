@@ -273,6 +273,9 @@ $translate = [
     'Mailing with this name already exists'=>'Рассылка с таким именем уже существует',
     'Add mailing'=>'Добавить рассылку',
     'Goods with these ID do not exist: {placeholder}'=>'Товары с этими ID не существуют: {placeholder}',
+    'Sorting'=>'Сортировка',
+    'Reset'=>'Сбросить',
+    'Let\'s stay in touch'=>'Будем на связи'
 ];
 
 return $translate;

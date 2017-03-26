@@ -274,31 +274,30 @@ class ModFiltersWidgetTests extends TestCase
         
         $result = $this->widget->run();
         
-        print_r($result);
-        
+        $this->assertRegExp('#<div id="products-filters">#', $result);
         $this->assertRegExp('#<ul class="products-filters-sorting-field" data-form-item="filtersform-sortingfield">#', $result);
-        $this->assertRegExp('#<li><span class="products-filters-header">.+</span></li>#', $result);
-        $this->assertRegExp('#<li class="products-filters-li" data-id="date descending"><span class="products-filters-item">Sorting by date</span></li>#', $result);
+        $this->assertRegExp('#<li><span class="products-filters-header first">Сортировка</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="date descending"><span class="products-filters-item">Sorting by date</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="price ascending"><span class="products-filters-item">Sorting by price</span></li>#', $result);
         $this->assertRegExp('#<ul class="products-filters-colors" data-form-item="filtersform-colors">#', $result);
-        $this->assertRegExp('#<li class="products-filters-li" data-id="1"><span class="color-hex" style="background-color:#000000"></span><span class="products-filters-item">black</span></li>#', $result);
+        $this->assertRegExp('#<li><span class="products-filters-header">Цвета</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="1"><span class="color-hex" style="background-color:\#000000"></span><span class="products-filters-item">black</span></li>#', $result);
         $this->assertRegExp('#<ul class="products-filters-sizes" data-form-item="filtersform-sizes">#', $result);
-        $this->assertRegExp('#<li class="products-filters-li" data-id="1"><span class="products-filters-item">45</span></li>#', $result);
+        $this->assertRegExp('#<li><span class="products-filters-header">Размеры</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="1"><span class="products-filters-item">45</span></li>#', $result);
         $this->assertRegExp('#<ul class="products-filters-buttons">#', $result);
-        $this->assertRegExp('#<li class="products-filters-li"><span id="filters-apply" class="products-filters-button">Применить</span></li>#', $result);
+        $this->assertRegExp('#<li><span id="filters-apply" class="products-filters-button">Применить</span></li>#', $result);
+        $this->assertRegExp('#<li><span id="filters-cancel" class="products-filters-button">Сбросить</span></li>#', $result);
         $this->assertRegExp('#<div class="products-filters-form disable">#', $result);
         $this->assertRegExp('#<form id="products-filters-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingField\]">#', $result);
         $this->assertRegExp('#<option value="date descending">Sorting by date</option>#', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
-        $this->assertRegExp('##', $result);
+        $this->assertRegExp('#<label><input type="checkbox" name=".+\[colors\]\[\]" value="1"> black</label>#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" name=".+\[sizes\]\[\]" value="1"> 45</label>#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[category\]">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[subcategory\]">#', $result);
+        $this->assertRegExp('#<form id="products-filters-clean" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
     }
 }

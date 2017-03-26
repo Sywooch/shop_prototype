@@ -911,6 +911,26 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод ConfigHandlerTrait::frontendFooterWidgetConfig
+     */
+    public function testFrontendFooterWidgetConfig()
+    {
+        $subscribeForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'frontendFooterWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $subscribeForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

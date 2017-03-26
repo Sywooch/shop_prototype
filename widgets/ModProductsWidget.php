@@ -1,0 +1,111 @@
+<?php
+
+namespace app\widgets;
+
+use yii\base\ErrorException;
+use yii\helpers\{Html,
+    Url};
+use app\widgets\AbstractBaseWidget;
+use app\collections\CollectionInterface;
+use app\models\CurrencyInterface;
+use app\helpers\ImgHelper;
+
+/**
+ * Формирует HTML строку с информацией о текущем статусе корзины заказов
+ */
+class ModProductsWidget extends AbstractBaseWidget
+{
+    /**
+     * @var object CollectionInterface
+     */
+    private $products;
+    /**
+     * @var CurrencyInterface
+     */
+    private $currency;
+    /**
+     * @var string имя шаблона
+     */
+    private $template;
+    
+    /**
+     * Конструирует HTML строку с информацией о текущем статусе корзины заказов
+     * @return string
+     */
+    public function run()
+    {
+        try {
+            if (empty($this->products)) {
+                throw new ErrorException($this->emptyError('products'));
+            }
+            if (empty($this->currency)) {
+                throw new ErrorException($this->emptyError('currency'));
+            }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
+            }
+            
+            $renderArray = [];
+            
+            foreach ($this->products as $product) {
+                $set = [];
+                $set['id'] = $product->id;
+                $set['linkText'] = $product->name;
+                $set['linkHref'] = Url::to(['/product-detail/index', 'seocode'=>$product->seocode]);
+                $set['short_description'] = $product->short_description;
+                $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->symbol());
+                
+                if (!empty($product->images)) {
+                    $set['image'] = ImgHelper::randThumbn($product->images);
+                }
+                
+                $renderArray['collection'][] = $set;
+            }
+            
+            $renderArray['priceText'] = \Yii::t('base', 'Price');
+            
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CollectionInterface свойству ModProductsWidget::products
+     * @param CollectionInterface $products
+     */
+    public function setProducts(CollectionInterface $products)
+    {
+        try {
+            $this->products = $products;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CurrencyInterface свойству ModProductsWidget::currency
+     * @param CurrencyInterface $currency
+     */
+    public function setCurrency(CurrencyInterface $currency)
+    {
+        try {
+            $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству ModProductsWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+}
