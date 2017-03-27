@@ -2,7 +2,8 @@
 
 namespace app\handlers;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
@@ -21,6 +22,7 @@ use app\forms\{AbstractBaseForm,
     CommentForm,
     ChangeCurrencyForm,
     PurchaseForm,
+    SubscribeForm,
     UserLoginForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
@@ -32,7 +34,9 @@ use app\validators\StripTagsValidator;
  */
 class ProductDetailIndexRequestHandler extends AbstractBaseHandler
 {
-    use ConfigHandlerTrait;
+    use ConfigHandlerTrait {
+        ConfigHandlerTrait::categoriesMenuWidgetConfig as categoriesMenuWidgetConfigBasic;
+    }
     
     /**
      * @var array массив данных для рендеринга
@@ -116,20 +120,22 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 
                 $commentForm = new CommentForm(['id_product'=>$productsModel->id]);
                 
-                $changeCurrencyForm = new ChangeCurrencyForm([
+                /*$changeCurrencyForm = new ChangeCurrencyForm([
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
-                ]);
+                ]);*/
                 
                 $userLoginForm = new UserLoginForm();
+                
+                $subscribeForm = new SubscribeForm();
                 
                 $dataArray = [];
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
-                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray, $productsModel);
                 $dataArray['productDetailWidgetConfig'] = $this->productDetailWidgetConfig($productsModel, $currentCurrencyModel);
                 $dataArray['purchaseFormWidgetConfig'] = $this->orderFormWidgetConfig($productsModel, $purchaseForm);
                 $dataArray['productBreadcrumbsWidget'] = $this->productBreadcrumbsWidget($productsModel);
@@ -137,6 +143,7 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 $dataArray['seeAlsoWidgetRelatedConfig'] = $this->seeAlsoWidgetRelatedConfig($relatedArray, $currentCurrencyModel);
                 $dataArray['commentsWidgetConfig'] = $this->commentsWidgetConfig($commentsArray);
                 $dataArray['сommentFormWidgetConfig'] = $this->сommentFormWidgetConfig($commentForm);
+                $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -288,6 +295,25 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
             
             $dataArray['form'] = $commentForm;
             $dataArray['template'] = 'comment-form.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета CategoriesMenuWidget
+     * @param array $categoriesModelArray
+     * @param Model $productsModel
+     * @return array
+     */
+    private function categoriesMenuWidgetConfig(array $categoriesModelArray, Model $productsModel): array
+    {
+        try {
+            $dataArray = $this->categoriesMenuWidgetConfigBasic($categoriesModelArray);
+            
+            $dataArray['currentUrl'] = Url::to(['/products-list/index', \Yii::$app->params['categoryKey']=>$productsModel->category->seocode, \Yii::$app->params['subcategoryKey']=>$productsModel->subcategory->seocode]);
             
             return $dataArray;
         } catch (\Throwable $t) {

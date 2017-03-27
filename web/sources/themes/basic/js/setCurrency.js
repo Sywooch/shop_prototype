@@ -30,3 +30,21 @@ SetCurrency.prototype.baseSend =  function(event, success) {
     }
 };
 
+var setCurrency = new SetCurrency();
+
+/* 
+* Управляет видимостью списка доступных валют
+*/
+$('#currency').on('click', '.currency-button', function(event) {
+    var target = $(event.target);
+    target.closest('li').find('.currency-not-active').toggleClass('disable');
+    target.toggleClass('bottom-line');
+});
+
+/* 
+* Отправляет запрос на замену текущей валюты
+*/
+$('#currency').on('click', '.currency-not-active span', function(event) {
+    setCurrency.redirectSend(event);
+    event.preventDefault();
+});

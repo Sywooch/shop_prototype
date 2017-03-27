@@ -45,6 +45,8 @@ class ModCategoriesMenuWidget extends AbstractBaseWidget
                 throw new ErrorException($this->emptyError('currentUrl'));
             }
             
+            $currentUrl = StringHelper::cutPage($this->currentUrl);
+            
             $renderArray = [];
             
             $name = \Yii::t('base', 'All catalog');
@@ -69,7 +71,7 @@ class ModCategoriesMenuWidget extends AbstractBaseWidget
                 
                 $name = \Yii::t('base', 'All');
                 $link = Url::to([$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]);
-                $active = (StringHelper::cutPage($this->currentUrl) === $link);
+                $active = ($currentUrl === $link);
                 $pack['subcategoryArray'][] = [
                     'name'=>$name,
                     'link'=>$link,
@@ -82,7 +84,7 @@ class ModCategoriesMenuWidget extends AbstractBaseWidget
                         }
                         $name = $subcategory->name;
                         $link = Url::to([$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]);
-                        $active = (StringHelper::cutPage($this->currentUrl) === $link);
+                        $active = ($currentUrl === $link);
                         $pack['subcategoryArray'][] = [
                             'name'=>$name,
                             'link'=>$link,

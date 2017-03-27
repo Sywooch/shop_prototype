@@ -237,6 +237,7 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('seeAlsoWidgetRelatedConfig', $result);
         $this->assertArrayHasKey('commentsWidgetConfig', $result);
         $this->assertArrayHasKey('сommentFormWidgetConfig', $result);
+        $this->assertArrayHasKey('frontendFooterWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
         $this->assertInternalType('array', $result['shortCartWidgetConfig']);
@@ -250,6 +251,7 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['seeAlsoWidgetRelatedConfig']);
         $this->assertInternalType('array', $result['commentsWidgetConfig']);
         $this->assertInternalType('array', $result['сommentFormWidgetConfig']);
+        $this->assertInternalType('array', $result['frontendFooterWidgetConfig']);
     }
     
     /**

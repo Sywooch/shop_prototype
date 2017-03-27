@@ -104,7 +104,7 @@ class ModCategoriesMenuWidgetTests extends TestCase
             new class() {
                 public $active = true;
                 public $name = 'Category 1';
-                public $seocode = 'category-1';
+                public $seocode = 'category';
                 public $subcategory;
                 public function __construct()
                 {
@@ -135,10 +135,10 @@ class ModCategoriesMenuWidgetTests extends TestCase
         
         $this->assertRegExp('#<nav id="categories-menu-container">#', $result);
         $this->assertRegExp('#<ul class="categories-menu">#', $result);
-        $this->assertRegExp('#<li><a href=".+">Весь каталог</a>#', $result);
-        $this->assertRegExp('#<li><span class="category-button">Category 1</span><span class="menu-marker">&rsaquo;</span>#', $result);
-        $this->assertRegExp('#<ul class="subcategory-menu disable">#', $result);
-        $this->assertRegExp('#<li class="active"><a href=".+">Все</a></li>#', $result);
+        $this->assertRegExp('#<li><a href=".+" class="category-button">Весь каталог</a>#', $result);
+        $this->assertRegExp('#<li><a href=".+" class="category-button">Category 1</a><span class="menu-marker">&rsaquo;</span>#', $result);
+        $this->assertRegExp('#<ul class="subcategory-menu disable" data-category="Category 1">#', $result);
+        $this->assertRegExp('#<li><a href=".+" class="active">Все</a></li>#', $result);
         $this->assertRegExp('#<li><a href=".+">Subcategory 1</a></li>#', $result);
     }
 }

@@ -14,7 +14,10 @@ class ProductDetailAsset extends AbstractAsset
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
+        'js/setCurrency.js',
+        'js/moveToSidebar.js',
         'js/productDetail.js',
+        'js/orderCheck.js',
     ];
     /**
      * @var array, зависимости пакета

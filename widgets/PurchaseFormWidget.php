@@ -59,11 +59,17 @@ class PurchaseFormWidget extends AbstractBaseWidget
             
             $colors = $this->product->colors;
             ArrayHelper::multisort($colors, 'color');
-            $renderArray['colors'] = ArrayHelper::map($colors, 'id', 'color');
+            $renderArray['colors'] = $colors;
+            $renderArray['colorsArray'] = ArrayHelper::map($colors, 'id', 'color');
             
             $sizes = $this->product->sizes;
             ArrayHelper::multisort($sizes, 'size');
             $renderArray['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
+            
+            $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
+            $renderArray['colorsHeader'] = \Yii::t('base', 'Colors');
+            $renderArray['sizesHeader'] = \Yii::t('base', 'Sizes');
+            $renderArray['toCartHeader'] = \Yii::t('base', 'Add to Cart');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

@@ -1,10 +1,37 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(formModel, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
-    {{ form.field(formModel, 'id_color').dropDownList(colors) | raw }}
-    {{ form.field(formModel, 'id_size').dropDownList(sizes) | raw }}
-    {{ form.field(formModel, 'id_product').hiddenInput({'value':id}).label(false) | raw }}
-    {{ form.field(formModel, 'price').hiddenInput({'value':price}).label(false) | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+<div class="order-form-group">
+    <div class="product-detail-lists">
+        <ul class="products-filters-quantity" data-form-item="purchaseform-quantity">
+            <li><span class="products-filters-header">{{ quantityHeader }}</span></li>
+            <li><span class="order-quantity-item"><span class="minus">&#8595;</span><span class="cifra">1</span><span class="plus">&#8593;</span></li>
+        </ul>
+        
+        <ul class="products-filters-colors" data-form-item="purchaseform-id_color">
+            <li><span class="products-filters-header">{{ colorsHeader }}</span></li>
+            {% for color in colors %}
+                <li data-id="{{ color.id }}"><span class="color-hex" style="background-color:{{ color.hexcolor }}"></span><span class="products-filters-item">{{ color.color }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <ul class="products-filters-sizes" data-form-item="purchaseform-id_size">
+            <li><span class="products-filters-header">{{ sizesHeader }}</span></li>
+            {% for key,value in sizes %}
+                <li data-id="{{ key }}"><span class="products-filters-item">{{ value }}</span></li>
+            {% endfor %}
+        </ul>
+        
+        <div class="order-button">{{ toCartHeader }}</div>
+    </div>
+    
+     <div class="order-form">
+        {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+            {{ form.field(formModel, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
+            {{ form.field(formModel, 'id_color').dropDownList(colorsArray).label('Colors') | raw }}
+            {{ form.field(formModel, 'id_size').dropDownList(sizes).label('Sizes') | raw }}
+            {{ form.field(formModel, 'id_product').hiddenInput({'value':id}).label(false) | raw }}
+            {{ form.field(formModel, 'price').hiddenInput({'value':price}).label(false) | raw }}
+            <input type="submit" value="{{ button }}">
+        {{ active_form_end() }}
+    </div>
+</div>

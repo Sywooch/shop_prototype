@@ -1,4 +1,4 @@
-<h1>{{ name }}</h1>
+<!--<h1>{{ name }}</h1>
 
 <p>{{ description }}</p>
 {{ images | raw }}
@@ -15,4 +15,18 @@
     {% endfor %}
 </ul>
 <p><strong>{{ priceText }}</strong> {{ price }}</p>
-<p><strong>{{ codeText }}</strong> {{ code }}</p>
+<p><strong>{{ codeText }}</strong> {{ code }}</p>-->
+
+<article id="product-detail">
+    <div class="product-detail-right">
+        <h1>{{ name }}</h1>
+        
+        <p class="product-detail-price">{{ price | raw }}</p>
+        
+        <p class="product-detail-description">{{ description }}</p>
+    </div>
+    
+    <div class="product-detail-left">
+        {{ images | raw }}
+    </div>
+</article>

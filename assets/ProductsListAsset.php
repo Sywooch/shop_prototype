@@ -16,6 +16,7 @@ class ProductsListAsset extends AbstractAsset
     public $js = [
         'js/filtersCheck.js',
         'js/setCurrency.js',
+        'js/moveToSidebar.js',
         'js/productsList.js',
     ];
     /**

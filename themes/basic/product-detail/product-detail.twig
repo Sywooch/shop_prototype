@@ -1,6 +1,6 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/ProductDetailAsset') }}
     
@@ -11,9 +11,7 @@
     {{ use('app/widgets/CommentsWidget') }}
     {{ use('app/widgets/CommentFormWidget') }}
     
-    {{ include('@theme/common/frontend-common.twig') }}
-    
-    {{ product_breadcrumbs_widget_widget(productBreadcrumbsWidget) }}
+    <!--{{ product_breadcrumbs_widget_widget(productBreadcrumbsWidget) }}-->
     
     {{ product_detail_widget_widget(productDetailWidgetConfig) }}
     
@@ -23,12 +21,8 @@
     
     {{ see_also_widget_widget(seeAlsoWidgetRelatedConfig) }}
     
-    <p><strong>Комментарии</strong></p>
-    
     {{ comments_widget_widget(commentsWidgetConfig) }}
     
     {{ comment_form_widget_widget(сommentFormWidgetConfig) }}
     
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
-    
-{% endblock content %}
+{% endblock %}

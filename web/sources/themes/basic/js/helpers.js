@@ -106,4 +106,22 @@ function Helpers()
             console.log(e.name + ': ' + e.message);
         }
     };
+    
+    /*
+     * Возвращает строковое представление объекта
+     */
+    this.toString = function(object) {
+        try {
+            var string = '';
+            
+            object.each(function(index, elm) {
+                string += elm.outerHTML;
+                $(elm).remove();
+            });
+            
+            return string;
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
 }

@@ -24,7 +24,7 @@ class PaginationWidget extends AbstractBaseWidget
     /**
      * @var string имя тега-контейнера, обрамляющего ссылки на страницы
      */
-    public $childTag = 'il';
+    public $childTag = 'li';
     /**
      * @var string символ, разделяющий ссылки
      */

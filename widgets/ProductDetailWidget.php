@@ -66,7 +66,7 @@ class ProductDetailWidget extends AbstractBaseWidget
             ArrayHelper::multisort($sizes, 'size');
             $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
             
-            $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+            $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->symbol();
             $renderArray['code'] = $this->product->code;
             $renderArray['colorsText'] = \Yii::t('base', 'Colors');
             $renderArray['sizesText'] = \Yii::t('base', 'Sizes');
