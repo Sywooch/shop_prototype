@@ -24,7 +24,7 @@ $(function() {
     * обновляет информацию и состоянии или редирект, если товар был единственным в заказе
     */
     $('.cart-items').on('click', 'form[id^="update-product-form"] > input[type="submit"], form[id^="delete-product-form"] > input[type="submit"]', function(event) {
-        send.htmlArrayRedirectSend(event, '.cart-items', '.shortCart', 'items', 'shortCart');
+        send.htmlArrayRedirectSend(event, '.cart-items', '#short-cart', 'items', 'shortCart');
         event.preventDefault();
     });
     

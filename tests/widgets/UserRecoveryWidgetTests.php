@@ -191,9 +191,11 @@ class UserRecoveryWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<div id="recovery">#', $result);
+        $this->assertRegExp('#<h1>Header</h1>#', $result);
         $this->assertRegExp('#<p>Чтобы продолжить восстановление пароля, введите ваш email</p>#', $result);
-        $this->assertRegExp('#<form id="recovery-password-form"#', $result);
+        $this->assertRegExp('#<form id="recovery-password-form" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[email\]" placeholder="Email">#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);
     }
 }

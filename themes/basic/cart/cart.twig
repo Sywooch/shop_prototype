@@ -1,6 +1,6 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/CartAsset') }}
     
@@ -8,9 +8,7 @@
     {{ use('app/widgets/CartWidget') }}
     {{ use('app/widgets/CartCheckoutLinkWidget') }}
     
-    {{ include('@theme/common/frontend-cart-common.twig') }}
-    
-    {{ cart_breadcrumbs_widget_widget() }}
+    <!--{{ cart_breadcrumbs_widget_widget() }}-->
     
     <div class="cart-items">
         {{ cart_widget_widget(cartWidgetConfig) }}
@@ -20,8 +18,4 @@
         {{ cart_checkout_link_widget_widget(cartCheckoutLinkWidgetConfig) }}
     </div>
     
-    {{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}
-    
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
-    
-{% endblock content %}
+{% endblock %}

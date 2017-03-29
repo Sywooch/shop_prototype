@@ -13,6 +13,7 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{ChangeCurrencyForm,
     PurchaseForm,
+    SubscribeForm,
     UserLoginForm};
 
 /**
@@ -72,16 +73,19 @@ class CartIndexRequestHandler extends AbstractBaseHandler
                 
                 $purchaseForm = new PurchaseForm();
                 $userLoginForm = new UserLoginForm();
+                $subscribeForm = new SubscribeForm();
                 
                 $dataArray = [];
                 
                 $dataArray['cartWidgetConfig'] = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $purchaseForm);
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
-                $dataArray['shortCartRedirectWidgetConfig'] = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
+                //$dataArray['shortCartRedirectWidgetConfig'] = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['cartCheckoutLinkWidgetConfig'] = $this->cartCheckoutLinkWidgetConfig();
+                $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
                 
                 $this->dataArray = $dataArray;
             }

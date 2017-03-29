@@ -17,6 +17,7 @@ use app\helpers\HashHelper;
 use app\savers\ModelSaver;
 use app\models\UsersModel;
 use app\forms\{ChangeCurrencyForm,
+    SubscribeForm,
     UserLoginForm};
 use app\validators\StripTagsValidator;
 
@@ -127,12 +128,14 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
             ]);
             
             $userLoginForm = new UserLoginForm();
+            $subscribeForm = new SubscribeForm();
             
             $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
             $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-            $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+            $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $currentCurrencyModel);
             $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
             $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+            $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

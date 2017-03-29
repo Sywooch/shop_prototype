@@ -133,13 +133,12 @@ class UserLoginWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Войти</strong></p>#', $result);
-        $this->assertRegExp('#<form id="login-form" action="#', $result);
-        $this->assertRegExp('#<label.+>Email</label>#', $result);
-        $this->assertRegExp('#<input type="text"#', $result);
-        $this->assertRegExp('#<label.+>Password</label>#', $result);
-        $this->assertRegExp('#<input type="password"#', $result);
+        $this->assertRegExp('#<div id="login-form">#', $result);
+        $this->assertRegExp('#<h1>Войти</h1>#', $result);
+        $this->assertRegExp('#<form id="login-form" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[email\]" placeholder="Email">#', $result);
+        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[password\]" placeholder="Password">#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);
-        $this->assertRegExp('#<a href=".+">Забыли пароль\?</a>#', $result);
+        $this->assertRegExp('#<div class="recovery"><a href=".+" class="gray">Забыли пароль\?</a></div>#', $result);
     }
 }

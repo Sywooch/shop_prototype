@@ -14,6 +14,7 @@ class CartAsset extends AbstractAsset
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
+        'js/setCurrency.js',
         'js/cart.js',
     ];
     /**

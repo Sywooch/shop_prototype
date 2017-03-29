@@ -1,11 +1,11 @@
-<p><strong>{{ header }}</strong></p>
-
-<ul>
-    {% for product in products %}
-        <li>
-            <a href="{{ product.linkHref }}">{{ product.linkText }}</a>
-            </br>{{ product.image | raw }}
-            </br>{{ priceText }}: {{ product.price }}
-        </li>
-    {% endfor %}
-</ul>
+<section id="similar">
+    <ul class="products-items">
+        {% for product in products %}
+            <li class="product-id">
+                <a href="{{ product.linkHref }}">{{ product.image | raw }}</a>
+                <div class="product-name"><a href="{{ product.linkHref }}" class="product-text-link">{{ product.linkText }}</a>
+                <br><span class="price">{{ product.price | raw }}</span></div>
+            </li>
+        {% endfor %}
+    </ul>
+</section>

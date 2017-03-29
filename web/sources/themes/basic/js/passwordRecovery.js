@@ -20,7 +20,7 @@ $(function() {
     * обновляет информацию и состоянии
     */
     $('#recovery-password-form').on('click', 'input[type="submit"]', function(event) {
-        send.htmlSend(event, '.recovery');
+        send.htmlSend(event, '#recovery');
         event.preventDefault();
     });
 });

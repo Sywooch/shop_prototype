@@ -11,7 +11,7 @@ use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
-use app\widgets\ShortCartWidget;
+use app\widgets\ModShortCartWidget;
 use app\models\PurchasesModel;
 use app\services\GetCurrentCurrencyModelService;
 
@@ -77,7 +77,7 @@ class CartAddRequestHandler extends AbstractBaseHandler
                     $saver->save();
                     
                     $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($purchasesCollection, $currentCurrencyModel);
-                    return ShortCartWidget::widget($shortCartWidgetAjaxConfig);
+                    return ModShortCartWidget::widget($shortCartWidgetAjaxConfig);
                 }
             }
         } catch (\Throwable $t) {

@@ -12,6 +12,7 @@ use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
 use app\widgets\{CartWidget,
+    ModShortCartWidget,
     ShortCartRedirectWidget};
 use app\models\PurchasesModel;
 use app\services\GetCurrentCurrencyModelService;
@@ -83,8 +84,11 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                     $cartWidgetConfig = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $purchaseForm);
                     $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                     
-                    $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
-                    $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);
+                    /*$shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
+                    $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);*/
+                    
+                    $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($ordersCollection, $currentCurrencyModel);
+                    $dataArray['shortCart'] = ModShortCartWidget::widget($shortCartWidgetAjaxConfig);
                     
                     return $dataArray;
                 }

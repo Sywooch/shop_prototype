@@ -1,13 +1,12 @@
-<div class="comment-text">
-{% if comments %}
-    <ul>
-        {% for comment in comments %}
-            <li>
-                {{ comment.name }}
-                </br>{{ comment.date }}
-                </br>{{ comment.text }}
+<section id="comments">
+    {% if comments %}
+        <ul id="comment-text">
+            {% for comment in comments %}
+                <li>
+                    <span class="comment-name">&mdash; {{ comment.name }}</span>,<span class="comment-date">{{ comment.date }}</span>
+                    <p><span class="comment-text">{{ comment.text }}</span></p>
             </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-</div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>

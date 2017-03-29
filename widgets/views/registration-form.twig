@@ -1,10 +1,12 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<p><strong>{{ header }}</strong></p>
-
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(formModel, 'email') | raw }}
-    {{ form.field(formModel, 'password').passwordInput() | raw }}
-    {{ form.field(formModel, 'password2').passwordInput() | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+<div id="registration">
+    <h1>{{ header }}</h1>
+    
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(formModel, 'email').textInput({'placeholder':placeholderEmail}).label(false) | raw }}
+        {{ form.field(formModel, 'password').passwordInput({'placeholder':placeholderPassw}).label(false) | raw }}
+        {{ form.field(formModel, 'password2').passwordInput({'placeholder':placeholderConfPassw}).label(false) | raw }}
+        <input type="submit" value="{{ button }}">
+    {{ active_form_end() }}
+</div>

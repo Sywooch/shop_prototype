@@ -222,17 +222,25 @@ class PurchaseFormWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<form id="purchase-form"#', $result);
-        $this->assertRegExp('#<input type="number"#', $result);
-        $this->assertRegExp('#step="1" min="1">#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Id Color</label>#', $result);
+        $this->assertRegExp('#<div class="order-form-group">#', $result);
+        $this->assertRegExp('#<div class="product-detail-lists">#', $result);
+        $this->assertRegExp('#<ul class="products-filters-quantity" data-form-item="purchaseform-quantity">#', $result);
+        $this->assertRegExp('#<li><span class="products-filters-header">.+</span></li>#', $result);
+        $this->assertRegExp('#<li><span class="order-quantity-item"><span class="minus">&\#8595;</span><span class="cifra">1</span><span class="plus">&\#8593;</span></li>#', $result);
+        $this->assertRegExp('#<ul class="products-filters-colors" data-form-item="purchaseform-id_color">#', $result);
+        $this->assertRegExp('#<li data-id="1"><span class="color-hex" style="background-color:"></span><span class="products-filters-item">black</span></li>#', $result);
+        $this->assertRegExp('#<ul class="products-filters-sizes" data-form-item="purchaseform-id_size">#', $result);
+        $this->assertRegExp('#<li data-id="1"><span class="products-filters-item">45</span></li>#', $result);
+        $this->assertRegExp('#<div class="order-button">Add to Cart</div>#', $result);
+        $this->assertRegExp('#<div class="order-form disable">#', $result);
+        $this->assertRegExp('#<form id="purchase-form" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[quantity\]" step="1" min="1">#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_color\]">#', $result);
         $this->assertRegExp('#<option value="1">black</option>#', $result);
-        $this->assertRegExp('#<option value="2">red</option>#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Id Size</label>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_size\]">#', $result);
         $this->assertRegExp('#<option value="1">45</option>#', $result);
-        $this->assertRegExp('#<option value="2">52.5</option>#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="23">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="56">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id_product\]" value="23">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[price\]" value="56">#', $result);
         $this->assertRegExp('#<input type="submit" value="Добавить в корзину">#', $result);
     }
 }

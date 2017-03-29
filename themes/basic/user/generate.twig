@@ -1,6 +1,6 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/PasswordGenerateAsset') }}
     
@@ -8,9 +8,7 @@
     {{ use('app/widgets/PasswordGenerateEmptyWidget') }}
     {{ use('app/widgets/PasswordGenerateSuccessWidget') }}
     
-    {{ include('@theme/common/frontend-common.twig') }}
-    
-    {{ recovery_breadcrumbs_widget_widget() }}
+    <!--{{ recovery_breadcrumbs_widget_widget() }}-->
     
     {% if passwordGenerateEmptyWidgetConfig %}
         {{ password_generate_empty_widget_widget(passwordGenerateEmptyWidgetConfig) }}
@@ -18,6 +16,4 @@
         {{ password_generate_success_widget_widget(passwordGenerateSuccessWidgetConfig) }}
     {% endif %}
     
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
-    
-{% endblock content %}
+{% endblock %}

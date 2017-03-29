@@ -1,28 +1,28 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<p><strong>{{ header }}</strong></p>
-
-<ol>
-{% for product in collection %}
-    <li class="product-id-{{ product.id_product }}">
-        <a href="{{ product.linkHref }}">{{ product.linkText }}</a>
-        <br>{{ product.short_description }}
-        <br>{{ priceText }} <span class="price">{{ product.price }}</span>
-        <br>{{ product.image | raw }}
-        
-        <br>{% set form=active_form_begin({'id':product.formIdChange, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionChange, 'method':'POST'}) %}
-            {{ form.field(modelForm, 'quantity').input('number', {'step':1, 'min':1, 'value':product.quantity}) | raw }}
-            {{ form.field(modelForm, 'id_color').dropDownList(product.colors, {'value':product.id_color}) | raw }}
-            {{ form.field(modelForm, 'id_size').dropDownList(product.sizes, {'value':product.id_size}) | raw }}
-            {{ form.field(modelForm, 'id_product').hiddenInput({'value':product.id_product}).label(false) | raw }}
-            <input type="submit" value="{{ buttonChange }}">
-        {{ active_form_end() }}
-        
-        {% set formDelete=active_form_begin({'id':product.formIdDelete, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionDelete, 'method':'POST'}) %}
-            {{ formDelete.field(modelForm, 'id_product').hiddenInput({'value':product.id_product}).label(false) | raw }}
-            <input type="submit" value="{{ buttonDelete }}">
-        {{ active_form_end() }}
-        <br/>
-    </li>
-{% endfor %}
-</ol>
+<section id="cart">
+    <h1>{{ header }}</h1>
+    
+    <ul class="cart-orders">
+        {% for product in collection %}
+            <li class="product-id-{{ product.id_product }}">
+            <a href="{{ product.linkHref }}" class="gray">{{ product.linkText }}</a>
+            <br>{{ product.short_description }}
+            <br>{{ priceText }} <span class="price">{{ product.price }}</span>
+            <br>{{ product.image | raw }}
+            
+            <br>{% set form=active_form_begin({'id':product.formIdChange, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionChange, 'method':'POST'}) %}
+                {{ form.field(modelForm, 'quantity').input('number', {'step':1, 'min':1, 'value':product.quantity}) | raw }}
+                {{ form.field(modelForm, 'id_color').dropDownList(product.colors, {'value':product.id_color}) | raw }}
+                {{ form.field(modelForm, 'id_size').dropDownList(product.sizes, {'value':product.id_size}) | raw }}
+                {{ form.field(modelForm, 'id_product').hiddenInput({'value':product.id_product}).label(false) | raw }}
+                <input type="submit" value="{{ buttonChange }}">
+            {{ active_form_end() }}
+            
+            {% set formDelete=active_form_begin({'id':product.formIdDelete, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionDelete, 'method':'POST'}) %}
+                {{ formDelete.field(modelForm, 'id_product').hiddenInput({'value':product.id_product}).label(false) | raw }}
+                <input type="submit" value="{{ buttonDelete }}">
+            {{ active_form_end() }}
+        </li>
+    {% endfor %}
+    </ul>

@@ -13,6 +13,7 @@ use app\finders\{CategoriesFinder,
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
     RecoveryPasswordForm,
+    SubscribeForm,
     UserLoginForm};
 use app\helpers\HashHelper;
 
@@ -75,15 +76,17 @@ class UserRecoveryRequestHandler extends AbstractBaseHandler
                 $recoveryPasswordForm = new RecoveryPasswordForm();
                 
                 $userLoginForm = new UserLoginForm();
+                $subscribeForm = new SubscribeForm();
                 
                 $dataArray = [];
                 
                 $dataArray['userRecoveryWidgetConfig'] = $this->userRecoveryWidgetConfig($recoveryPasswordForm);
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+                $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
                 
                 $this->dataArray = $dataArray;
             }

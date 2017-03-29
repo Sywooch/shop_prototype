@@ -12,6 +12,7 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
+    SubscribeForm,
     UserLoginForm};
 use app\helpers\HashHelper;
 
@@ -70,6 +71,8 @@ class UserLoginRequestHandler extends AbstractBaseHandler
                 
                 $userLoginForm = new UserLoginForm();
                 
+                $subscribeForm = new SubscribeForm();
+                
                 $dataArray = [];
                 
                 $dataArray['userLoginWidgetConfig'] = $this->userLoginWidgetConfig($userLoginForm);
@@ -78,6 +81,7 @@ class UserLoginRequestHandler extends AbstractBaseHandler
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+                $dataArray['frontendFooterWidgetConfig'] = $this->frontendFooterWidgetConfig($subscribeForm);
                 
                 $this->dataArray = $dataArray;
             }

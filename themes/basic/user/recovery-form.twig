@@ -1,18 +1,14 @@
-{% extends '@theme/templates/base.twig' %}
+{% extends '@theme/templates/base-frontend.twig' %}
 
-{% block content %}
+{% block main %}
     
     {{ register_asset_bundle('app/assets/PasswordRecoveryAsset') }}
     
     {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
     {{ use('app/widgets/UserRecoveryWidget') }}
     
-    {{ include('@theme/common/frontend-common.twig') }}
+    <!--{{ recovery_breadcrumbs_widget_widget() }}-->
     
-    {{ recovery_breadcrumbs_widget_widget() }}
+    {{ user_recovery_widget_widget(userRecoveryWidgetConfig) }}
     
-    <div class="recovery">{{ user_recovery_widget_widget(userRecoveryWidgetConfig) }}</div>
-    
-    {{ include('@theme/common/frontend-bottom-common.twig') }}
-    
-{% endblock content %}
+{% endblock %}

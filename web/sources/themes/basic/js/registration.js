@@ -20,7 +20,7 @@ $(function() {
     * обновляет информацию и состоянии
     */
     $('#registration-form').on('click', 'input[type="submit"]', function(event) {
-        send.htmlSend(event, '.registration');
+        send.htmlSend(event, '#registration');
         event.preventDefault();
     });
 });

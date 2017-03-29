@@ -1,17 +1,17 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="footer-mailings-form">
-    <!--<p class="footer-mailings-form-text">{{ formText }}</p>-->
+<!--<div class="footer-mailings-form">
+    <p class="footer-mailings-form-text">{{ formText }}</p>
     
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(formModel, 'email').textInput({'placeholder':formText}).label(false) | raw }}<input type="submit" value="&#8594;" class="submit-arrow">
     {{ active_form_end() }}
-</div>
+</div>-->
 
 
 <ul class="footer-links">
-    {% for link in links %}
+    <!--{% for link in links %}
         <li><a href="{{ link.link }}">{{ link.text }}</a></li>
-    {% endfor %}
+    {% endfor %}-->
     <li>&copy 2017 Shop</li>
 </ul>

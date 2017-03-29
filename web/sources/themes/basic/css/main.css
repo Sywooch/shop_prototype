@@ -82,7 +82,9 @@ button, input, select, textarea{
 .currency-not-active,
 .products-items,
 .footer-links,
-#pagination{
+#pagination,
+#comment-text,
+.cart-orders{
     list-style:none;
     padding:0;
     margin:0;
@@ -302,7 +304,8 @@ button, input, select, textarea{
 }
 
 input[type="text"],
-input[type="submit"]{
+input[type="submit"],
+input[type="password"]{
     padding:0.7em 0;
     margin:0;
     border:0;
@@ -355,6 +358,7 @@ input[type="submit"]{
     max-width: 60%;
     order:1;
     flex-shrink:0;
+    text-align:right
 }
 
 .product-detail-right{
@@ -365,14 +369,14 @@ input[type="submit"]{
 }
 
 .product-detail-right h1{
-    font-size:2em;
-    line-height:1.2;
+    font-size:1em;
+    line-height:1.5;
     margin:0;
     padding:0;
 }
 
 .product-detail-description{
-    line-height:1.4;
+    line-height:1.5;
     color:#999;
 }
 
@@ -401,7 +405,7 @@ input[type="submit"]{
 
 .order-button{
     margin-top:2em;
-    background-color:#f5f5f5;
+    /*background-color:#f5f5f5;*/
     border:1px solid #999;
     padding:1em;
     text-align:center;
@@ -414,6 +418,84 @@ input[type="submit"]{
     color:#f5f5f5;
     background-color:#1a1a1a;
     cursor:pointer;
+}
+
+.order-form-group{
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#similar{
+    border-top:1px solid #999;
+    margin:4em 0;
+    color:#999
+}
+
+.products-items{
+    padding-top:2em
+}
+
+#login-form input[type="text"],
+#login-form input[type="password"],
+#registration-form input[type="text"],
+#registration-form input[type="password"],
+#recovery input[type="text"],
+#recovery input[type="password"],
+.cart-orders input[type="text"]{
+    width:30%;
+    padding:1em 0;
+}
+
+#login-form input[type="submit"],
+#registration-form input[type="submit"],
+#recovery input[type="submit"],
+.cart-orders input[type="submit"],
+#cart-сheckout-ajax-link input[type="submit"],
+#cart-сheckout-ajax-form input[type="submit"]{
+    margin-top:1em;
+    background-color:#1a1a1a;
+    border:0px solid #999;
+    padding:1em;
+    text-align:center;
+    color:#f5f5f5;
+    width:30%
+}
+
+.cart-orders input[type="submit"],
+#cart-сheckout-ajax-link input[type="submit"]{
+    margin-top:0.0em;
+}
+
+.cart-orders input[type="submit"]{
+    background-color:#999;
+}
+
+#cart-сheckout-ajax-link{
+    margin-top:4em
+}
+
+.help-block{
+    padding:0.5em 0;
+    color:#ff6f6f
+}
+
+.recovery{
+    margin-top:2em;
+}
+
+.gray{
+    color:#999
+}
+
+.long-text{
+    max-width:60%
+}
+
+.cart-orders li{
+    margin-top:2em
 }
 
 .disable,
