@@ -257,7 +257,6 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="admin-orders-filters-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Сортировать по дате</label>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);
         $this->assertRegExp('#<option value="4">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="3">Sort descending</option>#', $result);

@@ -77,14 +77,14 @@ class CartIndexRequestHandlerTests extends TestCase
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('cartWidgetConfig', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('shortCartRedirectWidgetConfig', $result);
+        //$this->assertArrayHasKey('shortCartRedirectWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         $this->assertArrayHasKey('cartCheckoutLinkWidgetConfig', $result);
         $this->assertInternalType('array', $result['cartWidgetConfig']);
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
-        $this->assertInternalType('array', $result['shortCartRedirectWidgetConfig']);
+        //$this->assertInternalType('array', $result['shortCartRedirectWidgetConfig']);
         $this->assertInternalType('array', $result['currencyWidgetConfig']);
         $this->assertInternalType('array', $result['searchWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);

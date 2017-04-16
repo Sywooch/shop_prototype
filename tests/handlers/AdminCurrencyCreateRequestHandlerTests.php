@@ -71,7 +71,8 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
             {
                 return [
                     'CurrencyForm'=>[
-                        'code'=>'EUR',
+                        'code'=>'JPY',
+                        'symbol'=>'&#165;',
                     ],
                 ];
             }
@@ -101,7 +102,8 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
             {
                 return [
                     'CurrencyForm'=>[
-                        'code'=>'JPY',
+                        'code'=>'AUD',
+                        'symbol'=>'&#41;&#24;',
                         'main'=>1
                     ],
                 ];

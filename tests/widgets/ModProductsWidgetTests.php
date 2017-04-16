@@ -179,7 +179,7 @@ class ModProductsWidgetTests extends TestCase
         $this->assertRegExp('#<ul class="products-items">#', $result);
         $this->assertRegExp('#<li class="product-id">#', $result);
         $this->assertRegExp('# <a href=".+"><img src=".+" height="200" alt=""></a>#', $result);
-        $this->assertRegExp('#<div class="product-name disable"><a href=".+" class="product-text-link">Black mood shoes</a>#', $result);
+        $this->assertRegExp('#<div class="product-name"><a href=".+" class="product-text-link">Black mood shoes</a>#', $result);
         $this->assertRegExp('#<span class="price">1591,07 </span>#', $result);
     }
 }

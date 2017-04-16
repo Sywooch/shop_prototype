@@ -137,7 +137,7 @@ class UserLoginWidgetTests extends TestCase
         $this->assertRegExp('#<h1>Войти</h1>#', $result);
         $this->assertRegExp('#<form id="login-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[email\]" placeholder="Email">#', $result);
-        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[password\]" placeholder="Password">#', $result);
+        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[password\]" placeholder="Пароль">#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);
         $this->assertRegExp('#<div class="recovery"><a href=".+" class="gray">Забыли пароль\?</a></div>#', $result);
     }

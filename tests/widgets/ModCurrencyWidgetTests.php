@@ -175,9 +175,9 @@ class ModCurrencyWidgetTests extends TestCase
         
         $this->assertRegExp('#<div id="currency">#', $result);
         $this->assertRegExp('#<ul class="currency-list">#', $result);
-        $this->assertRegExp('#<li class="currency-button"><span>USD &\#36;</span>#', $result);
+        $this->assertRegExp('#<li><span class="currency-button">USD</span>#', $result);
         $this->assertRegExp('#<ul class="currency-not-active disable" data-link=".+" data-action=".+">#', $result);
-        $this->assertRegExp('#<li data-id="1"><span>UAH</span></li>#', $result);
-        $this->assertRegExp('#<li data-id="3"><span>EUR</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="1"><span class="currency-item">UAH</span></li>#', $result);
+        $this->assertRegExp('#<li data-id="3"><span class="currency-item">EUR</span></li>#', $result);
     }
 }

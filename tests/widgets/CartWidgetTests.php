@@ -350,7 +350,6 @@ class CartWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<li class="product-id-1">#', $result);
         $this->assertRegExp('#<a href=".+">Product 1</a>#', $result);
         $this->assertRegExp('#Short description 1#', $result);

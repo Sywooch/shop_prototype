@@ -127,7 +127,6 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору</p>#', $result);
+        $this->assertRegExp('#<p class="long-text">К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору</p>#', $result);
     }
 }

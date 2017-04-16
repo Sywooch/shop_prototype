@@ -33,7 +33,7 @@ class FiltersSetRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод FiltersSetService::handle
+     * Тестирует метод FiltersSetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -46,7 +46,7 @@ class FiltersSetRequestHandlerTests extends TestCase
             {
                 return [
                     'FiltersForm'=>[
-                        'sortingField'=>'price',
+                        'sortingField'=>'price ascending',
                         'sortingType'=>SORT_ASC,
                         'colors'=>[12, 4],
                         'sizes'=>[3, 7],

@@ -47,6 +47,7 @@ class AdminCurrencyCreateRequestHandler extends AbstractBaseHandler
                     try {
                         $rawCurrencyModel = new CurrencyModel(['scenario'=>CurrencyModel::CREATE]);
                         $rawCurrencyModel->code = $form->code;
+                        $rawCurrencyModel->symbol = $form->symbol;
                         
                         if (!empty($form->main)) {
                             $finder = new CurrencyFinder();

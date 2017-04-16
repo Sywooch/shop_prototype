@@ -403,13 +403,13 @@ class PaginationWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<ul class="pagination">#', $result);
-        $this->assertRegExp('#<il><a href=".+">Первая</a></il>#', $result);
-        $this->assertRegExp('#<il><a href=".+\?page=2">2</a></il>#', $result);
-        $this->assertRegExp('#<il><a href=".+\?page=3">3</a></il>#', $result);
-        $this->assertRegExp('#<il class="active">4</il>#', $result);
-        $this->assertRegExp('#<il><a href=".+\?page=5">5</a></il>#', $result);
-        $this->assertRegExp('#<il><a href=".+\?page=6">6</a></il>#', $result);
-        $this->assertRegExp('#<il><a href=".+\?page=15">Последняя</a></il>#', $result);
+        $this->assertRegExp('#<ul id="pagination">#', $result);
+        $this->assertRegExp('#<li><a href=".+">Первая</a></li>#', $result);
+        $this->assertRegExp('#<li><a href=".+\?page=2">2</a></li>#', $result);
+        $this->assertRegExp('#<li><a href=".+\?page=3">3</a></li>#', $result);
+        $this->assertRegExp('#<li class="active">4</li>#', $result);
+        $this->assertRegExp('#<li><a href=".+\?page=5">5</a></li>#', $result);
+        $this->assertRegExp('#<li><a href=".+\?page=6">6</a></li>#', $result);
+        $this->assertRegExp('#<li><a href=".+\?page=15">Последняя</a></li>#', $result);
     }
 }

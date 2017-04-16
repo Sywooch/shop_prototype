@@ -271,12 +271,11 @@ class SeeAlsoWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/one">One</a>#', $result);
+        $this->assertRegExp('#<div class="product-name"><a href=".+" class="product-text-link">One</a>#', $result);
         $this->assertRegExp('#<img src=".+" height="150" alt="">#', $result);
-        $this->assertRegExp('#Цена: 331,92 MONEY#', $result);
-        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/two">Two</a>#', $result);
+        $this->assertRegExp('#<span class="price">331,92 MONEY</span>#', $result);
+        $this->assertRegExp('#<div class="product-name"><a href=".+" class="product-text-link">Two</a>#', $result);
         $this->assertRegExp('#<img src=".+" height="150" alt="">#', $result);
-        $this->assertRegExp('#Цена: 242,33 MONEY#', $result);
+        $this->assertRegExp('#<span class="price">242,33 MONEY</span>#', $result);
     }
 }

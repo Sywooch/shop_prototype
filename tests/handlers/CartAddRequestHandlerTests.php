@@ -90,10 +90,7 @@ class CartAddRequestHandlerTests extends TestCase
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
         
-        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 537,56 UAH</p>#', $result);
-        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result);
-        $this->assertRegExp('#<form id="clean-cart-form"#', $result);
-        $this->assertRegExp('#<input type="submit" value="Очистить корзину">#', $result);
+        $this->assertRegExp('#<a href=".+">Корзина 2<span class="separate">/</span>537,56 &\#8372;</a>#', $result);
     }
     
     public static function tearDownAfterClass()

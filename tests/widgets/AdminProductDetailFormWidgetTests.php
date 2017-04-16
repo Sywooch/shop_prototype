@@ -602,8 +602,12 @@ class AdminProductDetailFormWidgetTests extends TestCase
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[price\]" value=".+" step="0.01" min="0">#', $result);
         $this->assertRegExp('#<img src=".+" height="50" alt="">#', $result);
         $this->assertRegExp('#<input type="file" id=".+" name=".+\[images\]\[\]" multiple accept="image\/\*">#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_category\]" data-href=".+">#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_subcategory\]">#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_category\]" data-href=".+" data-disabled>#', $result);
+        $this->assertRegExp('#<option value="1" selected>Menswear</option>#', $result);
+        $this->assertRegExp('#<option value="2">Mensfootwear</option>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_subcategory\]" data-disabled>#', $result);
+        $this->assertRegExp('#<option value="1">Coat</option>#', $result);
+        $this->assertRegExp('#<option value="2" selected>Sneakers</option>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_colors\]\[\]" multiple size="[0-9]{1}">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_sizes\]\[\]" multiple size="[0-9]{1}">#', $result);
         $this->assertRegExp('#<option value="[0-9]{1}" selected>.+</option>#', $result);

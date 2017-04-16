@@ -191,7 +191,7 @@ class UserRegistrationWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<div id="registration-form">#', $result);
+        $this->assertRegExp('#<div id="registration">#', $result);
         $this->assertRegExp('#<h1>Header</h1>#', $result);
         $this->assertRegExp('#<form id="registration-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[email\]" placeholder="Email">#', $result);

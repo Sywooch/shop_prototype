@@ -114,7 +114,7 @@ class CommentsWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertSame('', $result);
+        $this->assertSame('', trim($result));
     }
     
     /**

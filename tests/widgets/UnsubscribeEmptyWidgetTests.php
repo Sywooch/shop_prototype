@@ -127,7 +127,7 @@ class UnsubscribeEmptyWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Отписаться</strong></p>#', $result);
-        $this->assertRegExp('#<p>Email some@some.com не связан ни с одной рассылкой!</p>#', $result);
+        $this->assertRegExp('#<h1>Отписаться</h1>#', $result);
+        $this->assertRegExp('#<p class="long-text">Email some@some.com не связан ни с одной рассылкой!</p>#', $result);
     }
 }

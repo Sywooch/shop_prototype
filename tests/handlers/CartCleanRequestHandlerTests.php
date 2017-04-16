@@ -70,7 +70,7 @@ class CartCleanRequestHandlerTests extends TestCase
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
-        $this->assertRegExp('#<p>Товаров в корзине: 0, Общая стоимость: 0,00 UAH</p>#', $result);
+        $this->assertRegExp('#<a href=".+"><span class="separate">/</span></a>#', $result);
         
         $session->remove(HashHelper::createCartKey());
         $session->remove(HashHelper::createCartCustomerKey());

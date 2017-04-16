@@ -155,7 +155,7 @@ class UserInfoWidgetTests extends TestCase
         
         $result = $this->widget->run();
         
-        $this->assertRegExp('/<div class="user-info">/', $result);
+        $this->assertRegExp('/<div id="user-info">/', $result);
         $this->assertRegExp('/<p>' . \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>\Yii::t('base', 'Guest')]) . '<\/p>/', $result);
     }
     
@@ -199,7 +199,7 @@ class UserInfoWidgetTests extends TestCase
         
         $result = $this->widget->run();
         
-        $this->assertRegExp('#<div class="user-info">#', $result);
+        $this->assertRegExp('#<div id="user-info">#', $result);
         $this->assertRegExp('#<p>Привет, some@some.com!</p>#', $result);
         $this->assertRegExp('#<form id="user-logout-form"#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="1">#', $result);
