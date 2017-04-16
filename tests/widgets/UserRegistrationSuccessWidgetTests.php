@@ -127,7 +127,6 @@ class UserRegistrationSuccessWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p>Вы успешно зарегистрировались! Теперь вы можете войти в систему с помощью логина и пароля</p>#', $result);
         $this->assertRegExp('#<p><a href=".+">Войти</a></p>#', $result);
     }

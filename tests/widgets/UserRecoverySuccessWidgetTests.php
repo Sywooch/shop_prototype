@@ -183,7 +183,6 @@ class UserRecoverySuccessWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p>Инструкции для восстановления пароля отправлены на email@mail.com</p>#', $result);
     }
 }
